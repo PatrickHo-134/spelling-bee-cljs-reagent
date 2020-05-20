@@ -1,10 +1,10 @@
-# spelling-bee
+# Spelling-bee
 
-FIXME: Write a one-line description of your library/project.
+This is a remade version of [New York Times' spelling bee game](https://www.nytimes.com/puzzles/spelling-bee) using Clojurescript and Reagent.
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+This project is part of my Clojure training program and used for demonstrating some important concepts in Clojurescript and Reagent.
 
 ## Development
 
