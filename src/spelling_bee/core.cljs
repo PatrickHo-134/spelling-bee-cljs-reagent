@@ -158,6 +158,15 @@
             (dispatch-user-input "")))
       (dispatch-user-input ""))))
 
+(defn handle-key-press
+  "Submits answer if user press Enter"
+  [e]
+  (if (= 13 (.-charCode e))
+    (handle-submit)))
+
+(defn handle-delete
+  []
+  (dispatch-user-input ""))
 
 ;; components
 (defn display-letters
@@ -174,10 +183,14 @@
   [:div {:style {:margin-bottom "10px"}}
     [:input {:type "text"
             :value @(rf/subscribe [:answer])
-            :on-change #(dispatch-user-input (-> % .-target .-value))}]
+            :on-change #(dispatch-user-input (-> % .-target .-value))
+            :on-key-press #(handle-key-press %)}]
     [:input {:type "button"
-            :value "Submit"
-            :on-click #(handle-submit)}]])
+             :value "Submit"
+             :on-click #(handle-submit)}]
+    [:input {:type "button"
+             :value "Delete"
+             :on-click #(handle-delete)}]])
 
 (defn list-found-words
   "Displays all items from a sequence to browser"
@@ -234,3 +247,24 @@
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 )
+
+
+
+; Ranks are based on a percentage of possible points in a puzzle. The minimum scores to reach each rank for today’s are:
+
+; Beginner (0)
+; Good Start (3)
+; Moving Up (7)
+; Good (11)
+; Solid (20)
+; Nice (34)
+; Great (54)
+; Amazing (67)
+; Genius (94)
+
+; modify letters displaying function
+; adding delete button
+; adding shuffle button
+; point slider
+; faded irrelevant letters
+; pop-up appears with a message
