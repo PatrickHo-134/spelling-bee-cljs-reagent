@@ -9,7 +9,8 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
-                 [figwheel "0.5.19"]]
+                 [figwheel "0.5.19"]
+                 [re-frame "1.0.0-rc1"]]
                  
   :source-paths ["src"]
   

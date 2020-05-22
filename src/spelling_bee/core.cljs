@@ -3,7 +3,7 @@
    [goog.dom :as gdom]
    [reagent.core :as r :refer [atom]]
    [reagent.dom :as rdom]
-   [goog.object :as gobj]
+   [re-frame.core :as rf]
    [clojure.string :as str]))
 
 ;; rules
@@ -19,8 +19,8 @@
 ; Each puzzle includes at least one “pangram” which uses every letter. 
 ; These are worth 7 extra points!
 
-(def word-list #{"AGAR"	"ALGA" "ALGAL" "ANAL"	"ANGULAR"	"ANNAL" 
-                "ANNUAL" "ANNUL"	"ANNULAR"	"ARUGULA" "AUGUR" "AUGURAL" 
+(def word-list #{"AGAR" "ALGA" "ALGAL" "ANAL" "ANGULAR" "ANNAL" 
+                "ANNUAL" "ANNUL" "ANNULAR" "ARUGULA" "AUGUR" "AUGURAL" 
                 "AURA" "AURAL" "DANG" "DARN" "DRAG" "DRUG" "DUAD" "DUAL" 
                 "DULL" "DULLARD" "DUNG" "GAGA" "GALA" "GALL" "GANG" 
                 "GANGLAND" "GARLAND" "GLAD" "GLAND" "GLANDULAR" "GLUG" 
@@ -33,12 +33,60 @@
 (def letters [\L \R \G \A \D \N \U])
 (def center-letter \A)
 
-(defonce answer (r/atom ""))
-(defonce found-words (r/atom #{}))
-(defonce points (r/atom [0]))
-;(defonce message (r/atom "")) ;; informs the result of the answer
+;; event dispatch
+(defn dispatch-user-input
+  [input]
+  (rf/dispatch [:answer-input input]))
 
-;; utilities functions
+(defn dispatch-new-points
+  [new-points]
+  (rf/dispatch [:new-points new-points]))
+
+(defn dispatch-new-found-words
+  [new-words]
+  (rf/dispatch [:new-found-words new-words]))
+
+;; event handlers
+(rf/reg-event-db ; initialize db
+  :initialize
+  (fn [_ _]
+    {:answer ""
+     :found-words #{}
+     :points [0]}))
+
+(rf/reg-event-db ; dispatch when the user changes the answer
+  :answer-input
+  (fn [db [_ new-answer]]
+    (assoc db :answer new-answer)))
+
+(rf/reg-event-db ; dispatch when a new point is given
+  :new-points
+  (fn [db [_ new-points]]
+    (assoc db :points new-points)))
+
+(rf/reg-event-db ; dispatch when a new word is found
+  :new-found-words
+  (fn [db [_ new-words]]
+    (assoc db :found-words new-words)))
+
+;; query
+(rf/reg-sub ; subscribe points
+  :points
+  (fn [db _]
+    (:points db)))
+
+(rf/reg-sub ; subscribe found-words
+  :found-words
+  (fn [db _]
+    (:found-words db)))
+
+(rf/reg-sub ; subscribe answer
+  :answer
+  (fn [db _]
+    (:answer db)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; utility functions
 (defn too-short?
   "Returns predicate value if a word has equal or less than 3 letters"
   [word]
@@ -73,9 +121,13 @@
 (defn found-word?
   "Returns predicate value if a word is already found"
   [word]
-  (some #(= (str/upper-case word) %) @found-words))
+  (some #(= (str/upper-case word) %) @(rf/subscribe [:found-words])))
 ;; a function to check profanity maybe needed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; (println @(rf/subscribe [:points]) 
+;          @(rf/subscribe [:answer]) 
+;          @(rf/subscribe [:found-words]))
 
 (defn display-message
   "Displays result of the answer"
@@ -93,13 +145,19 @@
 
 (defn handle-submit
   "Handles click on submit button"
-  [word]
-  (if (and (not (found-word? @answer)) 
-           (in-word-list? (str/upper-case @answer)))
-    (do (swap! found-words conj (str/upper-case @answer))
-        (swap! points conj (give-point @answer))
-        (reset! answer ""))
-    (reset! answer "")))
+  []
+  (let [new-answer (str/upper-case @(rf/subscribe [:answer]))]
+    (if (and (not (found-word? new-answer))
+            (in-word-list? new-answer))
+      (let [words @(rf/subscribe [:found-words])
+            new-found-words (conj words new-answer)
+            new-points (conj @(rf/subscribe [:points]) (give-point new-answer))]
+        (do (println new-answer new-found-words new-points)
+            (dispatch-new-found-words new-found-words)
+            (dispatch-new-points new-points)
+            (dispatch-user-input "")))
+      (dispatch-user-input ""))))
+
 
 ;; components
 (defn display-letters
@@ -112,36 +170,37 @@
 
 (defn set-input
   "Set input value to answer"
-  [value]
-  [:div
+  []
+  [:div {:style {:margin-bottom "10px"}}
     [:input {:type "text"
-            :value @answer
-            :on-change #(reset! answer (-> % .-target .-value))}]
+            :value @(rf/subscribe [:answer])
+            :on-change #(dispatch-user-input (-> % .-target .-value))}]
     [:input {:type "button"
             :value "Submit"
-            :on-click #(handle-submit @answer)}]])
+            :on-click #(handle-submit)}]])
 
 (defn list-found-words
   "Displays all items from a sequence to browser"
   []
   [:div
-    [:h3 "Found words (" (count @found-words) ")"]
+    [:h3 "Found words (" (count @(rf/subscribe [:found-words])) ")"]
     [:ul
-      (for [item (apply sorted-set @found-words)]
+      (for [item (apply sorted-set @(rf/subscribe [:found-words]))]
         ^{:key item} [:li item])]])
 
 (defn get-answer 
   []
   (fn []
     [:div
-      [:h3 "Enter your answer: " [set-input answer]]
-      [:p "Your answer is: " (str/upper-case @answer)]
-      [:p {:style {:color :red}} (display-message @answer)]]))
+      [:h3 "Enter your answer: "]
+      [set-input]
+      [:p "Your answer is: " (str/upper-case @(rf/subscribe [:answer]))]
+      [:p {:style {:color :red}} (display-message @(rf/subscribe [:answer]))]]))
 
 (defn display-points
   []
   [:div
-    [:h2 {:style {:color :orange}} "Total Point: " (reduce + @points)]])
+    [:h2 {:style {:color :orange}} "Total Point: " (reduce + @(rf/subscribe [:points]))]])
 
 (defn main
   []
@@ -161,6 +220,7 @@
 
 (defn mount-app-element []
   (when-let [el (get-app-element)]
+    (rf/dispatch-sync [:initialize])
     (mount el)))
 
 ;; conditionally start your application based on the presence of an "app" element
