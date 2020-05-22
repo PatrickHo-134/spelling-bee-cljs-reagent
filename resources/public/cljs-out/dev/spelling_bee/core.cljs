@@ -30,8 +30,7 @@
                 "LULL" "LULU" "LUNA" "LUNAR" "LUNG" "LUNULA" "NAAN" 
                 "NADA" "NANA" "NULL" "RADAR" "RAGA" "RAGLAN" "RAND" 
                 "RANG" "RUNG" "RURAL" "ULNA" "ULNAR" "UNGAG"})
-(def letters [\L \R \G \A \D \N \U])
-(def center-letter \A)
+(def letters [\A \L \R \G \D \N \U]) ;; always put center-letter at the beginning of the list
 
 ;; event dispatch
 (defn dispatch-user-input
@@ -46,11 +45,16 @@
   [new-words]
   (rf/dispatch [:new-found-words new-words]))
 
+(defn dispatch-new-letter-order
+  [new-order]
+  (rf/dispatch [:new-letter-order new-order]))
+
 ;; event handlers
 (rf/reg-event-db ; initialize db
   :initialize
   (fn [_ _]
-    {:answer ""
+    {:letters letters
+     :answer ""
      :found-words #{}
      :points [0]}))
 
@@ -69,6 +73,11 @@
   (fn [db [_ new-words]]
     (assoc db :found-words new-words)))
 
+(rf/reg-event-db ; dispatch when shuffle letter
+  :new-letter-order
+  (fn [db [_ new-order]]
+    (assoc db :letters new-order)))
+
 ;; query
 (rf/reg-sub ; subscribe points
   :points
@@ -85,6 +94,11 @@
   (fn [db _]
     (:answer db)))
 
+(rf/reg-sub ; subscribe letters
+  :letters
+  (fn [db _]
+    (:letters db)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utility functions
 (defn too-short?
@@ -100,13 +114,13 @@
 (defn include-center-letter?
   "Returns predicate value if a word has center letter"
   [word]
-  (some #(= center-letter (str/upper-case %)) (set word)))
+  (some #(= (first @(rf/subscribe [:letters])) (str/upper-case %)) (set word)))
 
 (defn pangram?
   "Returns predicate value if a word is a pangram"
   [word]
   (and (in-word-list? word)
-       (= (set (str/upper-case word)) (set letters))))
+       (= (set (str/upper-case word)) (set @(rf/subscribe [:letters])))))
 
 (defn give-point
   "Returns point if a word is in word list"
@@ -127,7 +141,8 @@
 
 ; (println @(rf/subscribe [:points]) 
 ;          @(rf/subscribe [:answer]) 
-;          @(rf/subscribe [:found-words]))
+;          @(rf/subscribe [:found-words])
+;          @(rf/subscribe [:letters]))
 
 (defn display-message
   "Displays result of the answer"
@@ -168,23 +183,50 @@
   []
   (dispatch-user-input ""))
 
+(defn handle-shuffle
+  []
+  (let [chars @(rf/subscribe [:letters])
+        center-letter (first chars)
+        other-letters (shuffle (rest chars))
+        new-order (concat center-letter other-letters)]
+    (dispatch-new-letter-order (vec new-order))))
+
 ;; components
+(defn list-letters
+  "Lists letters in buttons"
+  [chars]
+  [:div {:style {:margin "50px 50px 20px 50px"}}
+    [:div
+      (for [letter (subvec chars 1 4)]
+        ^{:key letter} [:input {:type "button"
+                                :value letter}])]
+    [:input {:style {:background-color :orange} ; center letter button
+             :type "button"
+             :value (first chars)}]
+    [:div
+      (for [letter (subvec chars 4 7)]
+        ^{:key letter} [:input {:type "button"
+                                :value letter}])]])
+
 (defn display-letters
   "Displays list of characters to browser"
-  [chars]
+  []
   [:div
     [:h2 "How many words can you make with these characters?"]
-    [:h3 {:style {:text-align :center}} (interpose " -- " chars)]
-    [:p "Words must include letter A (center letter)"]])
+    [:p "Words must include center letter"]
+    [list-letters @(rf/subscribe [:letters])]
+    [:input {:type "button"
+             :value "Shuffle"
+             :on-click #(handle-shuffle)}]])
 
 (defn set-input
   "Set input value to answer"
   []
   [:div {:style {:margin-bottom "10px"}}
     [:input {:type "text"
-            :value @(rf/subscribe [:answer])
-            :on-change #(dispatch-user-input (-> % .-target .-value))
-            :on-key-press #(handle-key-press %)}]
+             :value @(rf/subscribe [:answer])
+             :on-change #(dispatch-user-input (-> % .-target .-value))
+             :on-key-press #(handle-key-press %)}]
     [:input {:type "button"
              :value "Submit"
              :on-click #(handle-submit)}]
@@ -213,13 +255,19 @@
 (defn display-points
   []
   [:div
-    [:h2 {:style {:color :orange}} "Total Point: " (reduce + @(rf/subscribe [:points]))]])
+    [:h2 {:style {:color :orange}} "Total Point: " (reduce + @(rf/subscribe [:points]))]
+    [:input {:style {:background-color :orange :width "50%" :border-radius "10%"}
+             :type "range"  ; slider or range??
+             :value (reduce + @(rf/subscribe [:points]))
+             :min 0
+             :max 100
+             :disabled false}]])
 
 (defn main
   []
   [:<>
     [:h1 {:style {:color :orange :text-align :center}} "Welcome to Spelling Bee!!"]
-    [display-letters letters]
+    [display-letters @(rf/subscribe [:letters])]
     [get-answer]
     [display-points]
     [list-found-words]])
@@ -249,7 +297,6 @@
 )
 
 
-
 ; Ranks are based on a percentage of possible points in a puzzle. The minimum scores to reach each rank for today’s are:
 
 ; Beginner (0)
@@ -262,9 +309,11 @@
 ; Amazing (67)
 ; Genius (94)
 
-; modify letters displaying function
-; adding delete button
-; adding shuffle button
-; point slider
-; faded irrelevant letters
+; modify letters displaying function => done
+; adding delete button => done
+; adding shuffle button => done
+; point slider => done
+; pop-up from point slider 
+; faded irrelevant letters / different color for input
 ; pop-up appears with a message
+
