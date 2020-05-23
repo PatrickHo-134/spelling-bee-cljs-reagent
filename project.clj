@@ -11,7 +11,7 @@
                  [reagent "0.8.1"]
                  [figwheel "0.5.19"]
                  [re-frame "1.0.0-rc1"]
-                 [re-com "2.8.0"]]
+                 [org.clojars.frozenlock/reagent-modals "0.2.3"]]
                  
   :source-paths ["src"]
   

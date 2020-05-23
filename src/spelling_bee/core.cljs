@@ -4,6 +4,7 @@
    [goog.string :as gstring]
    [reagent.core :as r :refer [atom]]
    [reagent.dom :as rdom]
+   [reagent-modals.modals :as reagent-modals]
    [re-frame.core :as rf]
    [clojure.string :as s]))
 
@@ -171,11 +172,6 @@
 ;; a function to check profanity maybe needed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; (println @(rf/subscribe [:points]) 
-;          @(rf/subscribe [:answer]) 
-;          @(rf/subscribe [:found-words])
-;          @(rf/subscribe [:letters]))
-
 (defn display-message
   "Displays result of the answer"
   [word]
@@ -303,6 +299,23 @@
       [:p "Your answer is: " (s/upper-case @(rf/subscribe [:answer]))]
       [:p {:style {:color :red}} (display-message @(rf/subscribe [:answer]))]]))
 
+(defn ranking-information ; ranking points change depending on the game
+  []
+  [:div
+    [:h2 "Rankings"]
+    [:p "Ranks are based on a percentage of possible points in a puzzle. The minimum scores to reach each rank for today’s are:"]
+    [:ul
+      [:li "Beginner (0)"]
+      [:li "Good Start (2)"]
+      [:li "Moving Up (5)"]
+      [:li "Good (8)"]
+      [:li "Solid (16)"]
+      [:li "Nice (27)"]
+      [:li "Great (42)"]
+      [:li "Amazing (53)"]
+      [:li "Genius (74)"]]
+    [:p "Have feedback? Email us at " [:a {:href "phat.hovinh.13@gmail.com"} "phat.hovinh.13@gmail.com"]]])
+
 (defn display-points
   []
   [:div
@@ -310,12 +323,15 @@
       {:style {:color :orange}} 
       "Total Point: " (reduce + @(rf/subscribe [:points]))]
     [:h3 (get-rank @(rf/subscribe [:points]))
-      [:input {:style {:background-color :orange :width "50%" :border-radius "10%"}
+      [reagent-modals/modal-window] ; need to add modal-window before bringing up modal window
+      [:input {:class "slider"
+               :style {:width "50%" :margin "0 auto"}
                :type "range"  ; slider or range??
                :value (reduce + @(rf/subscribe [:points]))
                :min 0
                :max 100
-               :disabled false}]]])
+               :disabled false
+               :on-click #(reagent-modals/modal! (ranking-information))}]]])
 
 (defn main
   []
@@ -355,7 +371,7 @@
 ; adding shuffle button => done
 ; point slider => done
 ; add player ranking => done
-; pop-up on click from point slider 
+; pop-up on click from point slider => done
 ; faded irrelevant letters / different color for input
-; pop-up appears with a message
+; pop-up appears after submitting answer
 
