@@ -4,7 +4,7 @@
    [reagent.core :as r :refer [atom]]
    [reagent.dom :as rdom]
    [re-frame.core :as rf]
-   [clojure.string :as str]))
+   [clojure.string :as s]))
 
 ;; rules
 ; Words must contain at least 4 letters.
@@ -19,6 +19,7 @@
 ; Each puzzle includes at least one “pangram” which uses every letter. 
 ; These are worth 7 extra points!
 
+;; input
 (def word-list #{"AGAR" "ALGA" "ALGAL" "ANAL" "ANGULAR" "ANNAL" 
                 "ANNUAL" "ANNUL" "ANNULAR" "ARUGULA" "AUGUR" "AUGURAL" 
                 "AURA" "AURAL" "DANG" "DARN" "DRAG" "DRUG" "DUAD" "DUAL" 
@@ -49,6 +50,10 @@
   [new-order]
   (rf/dispatch [:new-letter-order new-order]))
 
+(defn dispatch-new-rank
+  [upper-rank]
+  (rf/dispatch [:new-rank upper-rank]))
+
 ;; event handlers
 (rf/reg-event-db ; initialize db
   :initialize
@@ -56,7 +61,8 @@
     {:letters letters
      :answer ""
      :found-words #{}
-     :points [0]}))
+     :points [0]
+     :rank "Beginner"})) ; should we store rank since it can be derived from points
 
 (rf/reg-event-db ; dispatch when the user changes the answer
   :answer-input
@@ -77,6 +83,11 @@
   :new-letter-order
   (fn [db [_ new-order]]
     (assoc db :letters new-order)))
+
+(rf/reg-event-db ; dispatch when going upper rank
+  :new-rank
+  (fn [db [_ upper-rank]]
+    (assoc db :rank upper-rank)))
 
 ;; query
 (rf/reg-sub ; subscribe points
@@ -99,6 +110,11 @@
   (fn [db _]
     (:letters db)))
 
+(rf/reg-sub ; subscribe player rank
+  :rank
+  (fn [db _]
+    (:rank db)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utility functions
 (defn too-short?
@@ -109,18 +125,18 @@
 (defn in-word-list?
   "Returns predicate value if a word is in word list"
   [word]
-  (some #(= (str/upper-case word) %) word-list))
+  (some #(= (s/upper-case word) %) word-list))
 
 (defn include-center-letter?
   "Returns predicate value if a word has center letter"
   [word]
-  (some #(= (first @(rf/subscribe [:letters])) (str/upper-case %)) (set word)))
+  (some #(= (first @(rf/subscribe [:letters])) (s/upper-case %)) (set word)))
 
 (defn pangram?
   "Returns predicate value if a word is a pangram"
   [word]
   (and (in-word-list? word)
-       (= (set (str/upper-case word)) (set @(rf/subscribe [:letters])))))
+       (= (set (s/upper-case word)) (set @(rf/subscribe [:letters])))))
 
 (defn give-point
   "Returns point if a word is in word list"
@@ -135,7 +151,22 @@
 (defn found-word?
   "Returns predicate value if a word is already found"
   [word]
-  (some #(= (str/upper-case word) %) @(rf/subscribe [:found-words])))
+  (some #(= (s/upper-case word) %) @(rf/subscribe [:found-words])))
+
+(defn get-rank
+  [points]
+  (let [total-point (reduce + points)]
+    (cond 
+      (> 2 total-point)                            "Beginner"
+      (and (<= 2 total-point) (> 5 total-point))   "Good Start"
+      (and (<= 5 total-point) (> 8 total-point))   "Moving Up"
+      (and (<= 8 total-point) (> 16 total-point))  "Good"
+      (and (<= 16 total-point) (> 27 total-point)) "Solid"
+      (and (<= 27 total-point) (> 42 total-point)) "Nice"
+      (and (<= 42 total-point) (> 53 total-point)) "Great"
+      (and (<= 53 total-point) (> 74 total-point)) "Amazing"
+      (<= 74 total-point) "Genius")))
+
 ;; a function to check profanity maybe needed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -161,16 +192,18 @@
 (defn handle-submit
   "Handles click on submit button"
   []
-  (let [new-answer (str/upper-case @(rf/subscribe [:answer]))]
+  (let [new-answer (s/upper-case @(rf/subscribe [:answer]))]
     (if (and (not (found-word? new-answer))
             (in-word-list? new-answer))
       (let [words @(rf/subscribe [:found-words])
             new-found-words (conj words new-answer)
             new-points (conj @(rf/subscribe [:points]) (give-point new-answer))]
-        (do (println new-answer new-found-words new-points)
-            (dispatch-new-found-words new-found-words)
+        (do (dispatch-new-found-words new-found-words)
             (dispatch-new-points new-points)
-            (dispatch-user-input "")))
+            (dispatch-new-rank (get-rank new-points))
+            (dispatch-user-input "")
+        )
+      )
       (dispatch-user-input ""))))
 
 (defn handle-key-press
@@ -239,7 +272,7 @@
   []
   [:div
     [:h3 "Found words (" (count @(rf/subscribe [:found-words])) ")"]
-    [:ul
+    [:ol
       (for [item (apply sorted-set @(rf/subscribe [:found-words]))]
         ^{:key item} [:li item])]])
 
@@ -249,19 +282,22 @@
     [:div
       [:h3 "Enter your answer: "]
       [set-input]
-      [:p "Your answer is: " (str/upper-case @(rf/subscribe [:answer]))]
+      [:p "Your answer is: " (s/upper-case @(rf/subscribe [:answer]))]
       [:p {:style {:color :red}} (display-message @(rf/subscribe [:answer]))]]))
 
 (defn display-points
   []
   [:div
-    [:h2 {:style {:color :orange}} "Total Point: " (reduce + @(rf/subscribe [:points]))]
-    [:input {:style {:background-color :orange :width "50%" :border-radius "10%"}
-             :type "range"  ; slider or range??
-             :value (reduce + @(rf/subscribe [:points]))
-             :min 0
-             :max 100
-             :disabled false}]])
+    [:h2 
+      {:style {:color :orange}} 
+      "Total Point: " (reduce + @(rf/subscribe [:points]))]
+    [:h3 (get-rank @(rf/subscribe [:points]))
+      [:input {:style {:background-color :orange :width "50%" :border-radius "10%"}
+               :type "range"  ; slider or range??
+               :value (reduce + @(rf/subscribe [:points]))
+               :min 0
+               :max 100
+               :disabled false}]]])
 
 (defn main
   []
@@ -296,24 +332,12 @@
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 )
 
-
-; Ranks are based on a percentage of possible points in a puzzle. The minimum scores to reach each rank for today’s are:
-
-; Beginner (0)
-; Good Start (3)
-; Moving Up (7)
-; Good (11)
-; Solid (20)
-; Nice (34)
-; Great (54)
-; Amazing (67)
-; Genius (94)
-
 ; modify letters displaying function => done
 ; adding delete button => done
 ; adding shuffle button => done
 ; point slider => done
-; pop-up from point slider 
+; add player ranking => done
+; pop-up on click from point slider 
 ; faded irrelevant letters / different color for input
 ; pop-up appears with a message
 
