@@ -1,6 +1,7 @@
 (ns ^:figwheel-hooks spelling-bee.core
   (:require
    [goog.dom :as gdom]
+   [goog.string :as gstring]
    [reagent.core :as r :refer [atom]]
    [reagent.dom :as rdom]
    [re-frame.core :as rf]
@@ -165,7 +166,7 @@
       (and (<= 27 total-point) (> 42 total-point)) "Nice"
       (and (<= 42 total-point) (> 53 total-point)) "Great"
       (and (<= 53 total-point) (> 74 total-point)) "Amazing"
-      (<= 74 total-point) "Genius")))
+      (<= 74 total-point)                          "Genius")))
 
 ;; a function to check profanity maybe needed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -201,9 +202,7 @@
         (do (dispatch-new-found-words new-found-words)
             (dispatch-new-points new-points)
             (dispatch-new-rank (get-rank new-points))
-            (dispatch-user-input "")
-        )
-      )
+            (dispatch-user-input "")))
       (dispatch-user-input ""))))
 
 (defn handle-key-press
@@ -214,7 +213,9 @@
 
 (defn handle-delete
   []
-  (dispatch-user-input ""))
+  (let [current-answer @(rf/subscribe [:answer])
+        new-answer (subs current-answer 0 (- (count current-answer) 1))]
+    (dispatch-user-input new-answer)))
 
 (defn handle-shuffle
   []
@@ -225,6 +226,24 @@
     (dispatch-new-letter-order (vec new-order))))
 
 ;; components
+(defn shuffle-button
+  []
+  [:input {:type "button"
+             :value "Shuffle"
+             :on-click #(handle-shuffle)}])
+
+(defn submit-button
+  []
+  [:input {:type "button"
+           :value "Enter"
+           :on-click #(handle-submit)}])
+
+(defn delete-button
+  []
+  [:input {:type "button"
+           :value "Delete"
+           :on-click #(handle-delete)}])
+
 (defn list-letters
   "Lists letters in buttons"
   [chars]
@@ -232,14 +251,19 @@
     [:div
       (for [letter (subvec chars 1 4)]
         ^{:key letter} [:input {:type "button"
-                                :value letter}])]
+                                :value letter
+                                :on-click #(dispatch-user-input 
+                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}])]
     [:input {:style {:background-color :orange} ; center letter button
              :type "button"
-             :value (first chars)}]
+             :value (first chars)
+             :on-click #(dispatch-user-input (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}]
     [:div
       (for [letter (subvec chars 4 7)]
         ^{:key letter} [:input {:type "button"
-                                :value letter}])]])
+                                :value letter
+                                :on-click #(dispatch-user-input 
+                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}])]])
 
 (defn display-letters
   "Displays list of characters to browser"
@@ -248,24 +272,18 @@
     [:h2 "How many words can you make with these characters?"]
     [:p "Words must include center letter"]
     [list-letters @(rf/subscribe [:letters])]
-    [:input {:type "button"
-             :value "Shuffle"
-             :on-click #(handle-shuffle)}]])
+    [submit-button]
+    [shuffle-button]
+    [delete-button]])
 
-(defn set-input
+(defn get-input
   "Set input value to answer"
   []
   [:div {:style {:margin-bottom "10px"}}
     [:input {:type "text"
              :value @(rf/subscribe [:answer])
              :on-change #(dispatch-user-input (-> % .-target .-value))
-             :on-key-press #(handle-key-press %)}]
-    [:input {:type "button"
-             :value "Submit"
-             :on-click #(handle-submit)}]
-    [:input {:type "button"
-             :value "Delete"
-             :on-click #(handle-delete)}]])
+             :on-key-press #(handle-key-press %)}]])
 
 (defn list-found-words
   "Displays all items from a sequence to browser"
@@ -281,7 +299,7 @@
   (fn []
     [:div
       [:h3 "Enter your answer: "]
-      [set-input]
+      [get-input]
       [:p "Your answer is: " (s/upper-case @(rf/subscribe [:answer]))]
       [:p {:style {:color :red}} (display-message @(rf/subscribe [:answer]))]]))
 
