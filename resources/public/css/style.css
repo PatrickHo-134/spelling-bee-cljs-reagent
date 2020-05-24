@@ -1,7 +1,41 @@
 /* some simple css style */
 body {
-  font: 100% arial, sans-serif;
+  font: arial, sans-serif;
   text-align: center;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+/* .LetterButton {
+  width: 20px;
+  height: 20px;
+} */
+
+.TextFadeInAndOut {
+  width: 100px;
+  height: 20px;
+  -webkit-animation: fadeinout 4s linear forwards infinite;
+  animation: fadeinout 4s linear forwards infinite;
+}
+
+@-webkit-keyframes fadeinout {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinout {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* div h3 input.slider {

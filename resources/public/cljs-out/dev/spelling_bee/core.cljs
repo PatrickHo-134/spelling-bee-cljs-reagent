@@ -165,7 +165,7 @@
 ;; a function to check profanity maybe needed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn display-message
+(defn check-message
   "Displays result of the answer"
   [word]
   (cond 
@@ -236,20 +236,23 @@
 (defn list-letters
   "Lists letters in buttons"
   [chars]
-  [:div {:style {:margin "50px 50px 20px 50px"}}
+  [:div {:style {:margin "20px 50px 20px 50px"}}
     [:div
       (for [letter (subvec chars 1 4)]
-        ^{:key letter} [:input {:type "button"
+        ^{:key letter} [:input {:class "LetterButton"
+                                :type "button"
                                 :value letter
                                 :on-click #(dispatch-user-input 
                                             (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}])]
-    [:input {:style {:background-color :orange} ; center letter button
+    [:input {:class "LetterButton"
+             :style {:background-color :orange} ; center letter button
              :type "button"
              :value (first chars)
              :on-click #(dispatch-user-input (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}]
     [:div
       (for [letter (subvec chars 4 7)]
-        ^{:key letter} [:input {:type "button"
+        ^{:key letter} [:input {:class "LetterButton"
+                                :type "button"
                                 :value letter
                                 :on-click #(dispatch-user-input 
                                             (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}])]])
@@ -290,7 +293,10 @@
       [:h3 "Enter your answer: "]
       [get-input]
       [:p "Your answer is: " (s/upper-case @(rf/subscribe [:answer]))]
-      [:p {:style {:color :red}} (display-message @(rf/subscribe [:answer]))]]))
+      [:p {:class "TextFadeInAndOut"
+           :style {:color :red
+                   :margin "0 auto"}} 
+          (check-message @(rf/subscribe [:answer]))]]))
 
 (defn ranking-information ; ranking points change depending on the game
   []
@@ -365,6 +371,7 @@
 ; point slider => done
 ; add player ranking => done
 ; pop-up on click from point slider => done
-; faded irrelevant letters / different color for input
+; filter out bad characters
+; different colors for input letters
 ; pop-up appears after submitting answer
 
