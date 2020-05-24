@@ -14,8 +14,8 @@ re_frame.cofx.reg_cofx = (function re_frame$cofx$reg_cofx(id,handler){
 return re_frame.registrar.register_handler.call(null,re_frame.cofx.kind,id,handler);
 });
 re_frame.cofx.inject_cofx = (function re_frame$cofx$inject_cofx(var_args){
-var G__9213 = arguments.length;
-switch (G__9213) {
+var G__10212 = arguments.length;
+switch (G__10212) {
 case 1:
 return re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 

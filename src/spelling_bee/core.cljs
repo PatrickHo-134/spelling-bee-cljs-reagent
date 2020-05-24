@@ -22,18 +22,11 @@
 ; These are worth 7 extra points!
 
 ;; input
-(def word-list #{"AGAR" "ALGA" "ALGAL" "ANAL" "ANGULAR" "ANNAL" 
-                "ANNUAL" "ANNUL" "ANNULAR" "ARUGULA" "AUGUR" "AUGURAL" 
-                "AURA" "AURAL" "DANG" "DARN" "DRAG" "DRUG" "DUAD" "DUAL" 
-                "DULL" "DULLARD" "DUNG" "GAGA" "GALA" "GALL" "GANG" 
-                "GANGLAND" "GARLAND" "GLAD" "GLAND" "GLANDULAR" "GLUG" 
-                "GNARL" "GRAD" "GRADUAL" "GRAN" "GRAND" "GRANDAD" 
-                "GRANDDAD" "GRANULAR" "GUAR" "GUARD" "GULAG" "GULL" 
-                "GURU" "LAGGARD" "LAND" "LANDAU" "LARD" "LAUD" "LUAU" 
-                "LULL" "LULU" "LUNA" "LUNAR" "LUNG" "LUNULA" "NAAN" 
-                "NADA" "NANA" "NULL" "RADAR" "RAGA" "RAGLAN" "RAND" 
-                "RANG" "RUNG" "RURAL" "ULNA" "ULNAR" "UNGAG"})
-(def letters [\A \L \R \G \D \N \U]) ;; always put center-letter at the beginning of the list
+(def results #{"babyproof" "afar" "affray" "afro" "arbor" "array" "arroyo" "barb" "barf" 
+               "boar" "boor" "bray" "farro" "fora" "foray" "fray" "parry" 
+               "poor" "pray" "proof" "prop" "pyro" "roar" "roof" "ropy"})
+(def word-list (map s/upper-case results)) ; should I put it in re-frame database?
+(def letters [\R \A \B \F \O \P \Y]) ;; always put center-letter at the beginning of the list
 
 ;; event dispatch
 (defn dispatch-user-input
@@ -64,7 +57,7 @@
      :answer ""
      :found-words #{}
      :points [0]
-     :rank "Beginner"})) ; should we store rank since it can be derived from points
+     :rank "Beginner"})) ; should we store rank since it can be derived from points?
 
 (rf/reg-event-db ; dispatch when the user changes the answer
   :answer-input
@@ -161,13 +154,13 @@
     (cond 
       (> 2 total-point)                            "Beginner"
       (and (<= 2 total-point) (> 5 total-point))   "Good Start"
-      (and (<= 5 total-point) (> 8 total-point))   "Moving Up"
-      (and (<= 8 total-point) (> 16 total-point))  "Good"
-      (and (<= 16 total-point) (> 27 total-point)) "Solid"
-      (and (<= 27 total-point) (> 42 total-point)) "Nice"
-      (and (<= 42 total-point) (> 53 total-point)) "Great"
-      (and (<= 53 total-point) (> 74 total-point)) "Amazing"
-      (<= 74 total-point)                          "Genius")))
+      (and (<= 5 total-point) (> 7 total-point))   "Moving Up"
+      (and (<= 7 total-point) (> 14 total-point))  "Good"
+      (and (<= 14 total-point) (> 23 total-point)) "Solid"
+      (and (<= 23 total-point) (> 37 total-point)) "Nice"
+      (and (<= 37 total-point) (> 47 total-point)) "Great"
+      (and (<= 47 total-point) (> 65 total-point)) "Amazing"
+      (<= 65 total-point)                          "Genius")))
 
 ;; a function to check profanity maybe needed
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -308,12 +301,12 @@
       [:li "Beginner (0)"]
       [:li "Good Start (2)"]
       [:li "Moving Up (5)"]
-      [:li "Good (8)"]
-      [:li "Solid (16)"]
-      [:li "Nice (27)"]
-      [:li "Great (42)"]
-      [:li "Amazing (53)"]
-      [:li "Genius (74)"]]
+      [:li "Good (7)"]
+      [:li "Solid (14)"]
+      [:li "Nice (23)"]
+      [:li "Great (37)"]
+      [:li "Amazing (47)"]
+      [:li "Genius (65)"]]
     [:p "Have feedback? Email us at " [:a {:href "phat.hovinh.13@gmail.com"} "phat.hovinh.13@gmail.com"]]])
 
 (defn display-points
