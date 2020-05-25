@@ -289,7 +289,7 @@
 (defn get-answer 
   []
   (fn []
-    [:div
+    [:div {:style {:margin-top "50px"}}
       [:h3 "Enter your answer: "]
       [:div {:style {:margin-bottom "10px"}} ;; get input from user
         [:input {:type "text"
@@ -323,20 +323,22 @@
 
 (defn display-points
   []
-  [:div
-    [:h2 
-      {:style {:color :orange}} 
-      "Total Point: " (reduce + @(rf/subscribe [:points]))]
-    [:h3 (get-rank @(rf/subscribe [:points]))
-      [reagent-modals/modal-window] ; need to add modal-window before bringing up modal window
-      [:input {:class "slider"
-               :style {:width "50%" :margin "0 auto"}
-               :type "range"  ; slider or range??
-               :value (reduce + @(rf/subscribe [:points]))
-               :min 0
-               :max 100   ;; need to change this for the input
-               :disabled false
-               :on-click #(reagent-modals/modal! (ranking-information))}]]])
+  (let [points @(rf/subscribe [:points])]
+    [:div
+      [:h3 
+        {:style {:color :orange}} 
+        "Total Point: " (reduce + points)]
+      [:h4 {:style {:font-weight "bold" :margin-top "20px"}}
+        (get-rank points)
+        [reagent-modals/modal-window] ; need to add modal-window before bringing up modal window
+        [:input {:class "slider"
+                :style {:width "70%" :margin "0 auto"}
+                :type "range"  ; slider or range??
+                :value (reduce + points)
+                :min 0
+                :max 100   ;; need to change this for the input
+                :disabled false
+                :on-click #(reagent-modals/modal! (ranking-information))}]]]))
 
 (defn list-found-words
   "Displays all items from a sequence to browser"
@@ -352,10 +354,13 @@
   []
   [:<>
     [:h1 {:style {:color :orange :text-align :center}} "Welcome to Spelling Bee!!"]
-    [display-letters @(rf/subscribe [:letters])]
-    [get-answer]
-    [display-points]
-    [list-found-words]])
+    [:div {:class "col-6 col-md-6"}
+      [display-letters @(rf/subscribe [:letters])]
+      [get-answer]]
+    [:div {:style {:margin-top "50px"}
+           :class "col-6 col-md-6"}
+      [display-points]
+      [list-found-words]]])
 
 ;; display components to the dom
 (defn get-app-element []
