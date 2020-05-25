@@ -12,10 +12,10 @@ body {
 } */
 
 .TextFadeInAndOut {
-  width: 100px;
+  width: 300px;
   height: 20px;
-  -webkit-animation: fadeinout 4s linear forwards infinite;
-  animation: fadeinout 4s linear forwards infinite;
+  -webkit-animation: fadeinout 2s linear forwards infinite;
+  animation: fadeinout 2s linear forwards infinite;
 }
 
 @-webkit-keyframes fadeinout {

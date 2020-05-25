@@ -57,7 +57,23 @@
      :answer ""
      :found-words #{}
      :points [0]
-     :rank "Beginner"})) ; should we store rank since it can be derived from points?
+     :display-message true
+     :rank "Beginner"}))
+
+; ignore this part i'm working on it
+(rf/reg-sub ; subscribe display-message
+  :display-message
+  (fn [db _]
+    (:display-message db)))
+(rf/reg-event-db ; dispatch when the user changes the answer
+  :new-message
+  (fn [db [_ new-mess]]
+    (assoc db :display-message new-mess)))
+(defn dispatch-message
+  [mess]
+  (rf/dispatch [:new-message mess]))
+; (println @(rf/subscribe [:display-message]))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (rf/reg-event-db ; dispatch when the user changes the answer
   :answer-input
@@ -85,6 +101,11 @@
     (assoc db :rank upper-rank)))
 
 ;; query
+(rf/reg-sub ; subscribe answer
+  :answer
+  (fn [db _]
+    (:answer db)))
+
 (rf/reg-sub ; subscribe points
   :points
   (fn [db _]
@@ -94,11 +115,6 @@
   :found-words
   (fn [db _]
     (:found-words db)))
-
-(rf/reg-sub ; subscribe answer
-  :answer
-  (fn [db _]
-    (:answer db)))
 
 (rf/reg-sub ; subscribe letters
   :letters
@@ -127,6 +143,7 @@
   [word]
   (some #(= (first @(rf/subscribe [:letters])) (s/upper-case %)) (set word)))
 
+;; should fix this function
 (defn pangram?
   "Returns predicate value if a word is a pangram"
   [word]
@@ -162,23 +179,24 @@
       (and (<= 47 total-point) (> 65 total-point)) "Amazing"
       (<= 65 total-point)                          "Genius")))
 
-;; a function to check profanity maybe needed
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defn check-message
+(defn check-answer
   "Displays result of the answer"
   [word]
   (cond 
-    (= "" word)                   ""
-    (too-short? word)             "Too-short!"
+    (= "" word)                         ""
+    (too-short? word)                   "Too short!"
     (and (not (found-word? word)) 
-         (pangram? word))         "Genius!"
+         (pangram? word))               "Genius!"
     (and (not (found-word? word)) 
          (not (pangram? word))
-         (in-word-list? word))    "Very good!"
-    (found-word? word)            "Repeated answer!"
-    :else                         "Not in word list!"))
+         (in-word-list? word))          "Very good!"
+    (found-word? word)                  "Repeated answer!"
+    (not (include-center-letter? word)) "Missing center letter"
+    :else                               "Not in word list!"))
+;; a function to check profanity maybe needed
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; helper functions
 (defn handle-submit
   "Handles click on submit button"
   []
@@ -215,11 +233,12 @@
     (dispatch-new-letter-order (vec new-order))))
 
 ;; components
+;; buttons
 (defn shuffle-button
   []
   [:input {:type "button"
-             :value "Shuffle"
-             :on-click #(handle-shuffle)}])
+           :value "Shuffle"
+           :on-click #(handle-shuffle)}])
 
 (defn submit-button
   []
@@ -233,70 +252,57 @@
            :value "Delete"
            :on-click #(handle-delete)}])
 
-(defn list-letters
-  "Lists letters in buttons"
+(defn letter-buttons
+  "Creates a list of letter buttons"
   [chars]
-  [:div {:style {:margin "20px 50px 20px 50px"}}
-    [:div
-      (for [letter (subvec chars 1 4)]
+  (for [letter chars]
         ^{:key letter} [:input {:class "LetterButton"
                                 :type "button"
                                 :value letter
                                 :on-click #(dispatch-user-input 
-                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}])]
+                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}]))
+
+(defn list-letters
+  "Lists letters in buttons"
+  [chars]
+  [:div {:style {:margin "20px 50px 20px 50px"}}
+    [:div (letter-buttons (subvec chars 1 4))]
     [:input {:class "LetterButton"
              :style {:background-color :orange} ; center letter button
              :type "button"
              :value (first chars)
              :on-click #(dispatch-user-input (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}]
-    [:div
-      (for [letter (subvec chars 4 7)]
-        ^{:key letter} [:input {:class "LetterButton"
-                                :type "button"
-                                :value letter
-                                :on-click #(dispatch-user-input 
-                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}])]])
+    [:div (letter-buttons (subvec chars 4 7))]])
 
+;; rendering components
 (defn display-letters
   "Displays list of characters to browser"
   []
   [:div
-    [:h2 "How many words can you make with these characters?"]
+    [:h3 "How many words can you make with these characters?"]
     [:p "Words must include center letter"]
     [list-letters @(rf/subscribe [:letters])]
     [submit-button]
     [shuffle-button]
     [delete-button]])
 
-(defn get-input
-  "Set input value to answer"
-  []
-  [:div {:style {:margin-bottom "10px"}}
-    [:input {:type "text"
-             :value @(rf/subscribe [:answer])
-             :on-change #(dispatch-user-input (-> % .-target .-value))
-             :on-key-press #(handle-key-press %)}]])
-
-(defn list-found-words
-  "Displays all items from a sequence to browser"
-  []
-  [:div
-    [:h3 "Found words (" (count @(rf/subscribe [:found-words])) ")"]
-    [:ol
-      (for [item (apply sorted-set @(rf/subscribe [:found-words]))]
-        ^{:key item} [:li item])]])
-
 (defn get-answer 
   []
   (fn []
     [:div
       [:h3 "Enter your answer: "]
-      [get-input]
+      [:div {:style {:margin-bottom "10px"}} ;; get input from user
+        [:input {:type "text"
+                :value @(rf/subscribe [:answer])
+                :on-change #(dispatch-user-input (-> % .-target .-value))
+                :on-key-press #(handle-key-press %)}]]
       [:p "Your answer is: " (s/upper-case @(rf/subscribe [:answer]))]
-      [:p {:class "TextFadeInAndOut"
-           :style {:color :red
-                   :margin "0 auto"}} 
-          (check-message @(rf/subscribe [:answer]))]]))
+      (if @(rf/subscribe [:display-message])
+        [:p {:class "TextFadeInAndOut"
+            :style {:color :red
+                    :margin "0 auto"
+                    :font-weight "bold"}} 
+            (check-answer @(rf/subscribe [:answer]))])]))
 
 (defn ranking-information ; ranking points change depending on the game
   []
@@ -328,9 +334,19 @@
                :type "range"  ; slider or range??
                :value (reduce + @(rf/subscribe [:points]))
                :min 0
-               :max 100
+               :max 100   ;; need to change this for the input
                :disabled false
                :on-click #(reagent-modals/modal! (ranking-information))}]]])
+
+(defn list-found-words
+  "Displays all items from a sequence to browser"
+  []
+  (let [words @(rf/subscribe [:found-words])]
+    [:div
+      [:h3 "Found words (" (count words) ")"]
+      [:ol
+        (for [item (apply sorted-set words)]
+          ^{:key item} [:li item])]]))
 
 (defn main
   []
@@ -341,7 +357,7 @@
     [display-points]
     [list-found-words]])
 
-;; display components to browser
+;; display components to the dom
 (defn get-app-element []
   (gdom/getElement "app"))
 
