@@ -62,11 +62,15 @@ goog.addDependency("../re_frame/utils.js", ['re_frame.utils'], ['cljs.core', 're
 goog.addDependency("../re_frame/db.js", ['re_frame.db'], ['re_frame.interop', 'cljs.core']);
 goog.addDependency("../re_frame/events.js", ['re_frame.events'], ['re_frame.interop', 're_frame.interceptor', 're_frame.trace', 're_frame.registrar', 'cljs.core', 're_frame.utils', 're_frame.loggers', 're_frame.db']);
 goog.addDependency("../re_frame/router.js", ['re_frame.router'], ['re_frame.interop', 're_frame.events', 're_frame.trace', 'cljs.core', 're_frame.loggers']);
-goog.addDependency("../reagent_modals/modals.js", ['reagent_modals.modals'], ['goog.dom', 'reagent.core', 'cljs.core', 'goog.events.EventType', 'goog.events']);
 goog.addDependency("../re_frame/fx.js", ['re_frame.fx'], ['re_frame.interop', 're_frame.interceptor', 're_frame.events', 're_frame.trace', 're_frame.registrar', 'cljs.core', 're_frame.router', 're_frame.loggers', 're_frame.db']);
 goog.addDependency("../re_frame/cofx.js", ['re_frame.cofx'], ['re_frame.interceptor', 're_frame.registrar', 'cljs.core', 're_frame.loggers', 're_frame.db']);
 goog.addDependency("../re_frame/std_interceptors.js", ['re_frame.std_interceptors'], ['re_frame.interceptor', 're_frame.trace', 're_frame.settings', 'cljs.core', 're_frame.utils', 're_frame.loggers', 're_frame.cofx', 'clojure.data', 're_frame.db']);
 goog.addDependency("../re_frame/subs.js", ['re_frame.subs'], ['re_frame.interop', 're_frame.trace', 're_frame.registrar', 'cljs.core', 're_frame.utils', 're_frame.loggers', 're_frame.db']);
 goog.addDependency("../re_frame/core.js", ['re_frame.core'], ['re_frame.interop', 're_frame.interceptor', 're_frame.events', 're_frame.settings', 're_frame.fx', 're_frame.registrar', 'cljs.core', 're_frame.router', 're_frame.utils', 'clojure.set', 're_frame.std_interceptors', 're_frame.loggers', 're_frame.subs', 're_frame.cofx', 're_frame.db']);
-goog.addDependency("../spelling_bee/core.js", ['spelling_bee.core'], ['goog.dom', 'reagent_modals.modals', 'goog.string', 'reagent.core', 'cljs.core', 'clojure.string', 're_frame.core', 'reagent.dom']);
+goog.addDependency("../spelling_bee/db.js", ['spelling_bee.db'], ['cljs.core', 'clojure.string', 're_frame.core']);
+goog.addDependency("../spelling_bee/events.js", ['spelling_bee.events'], ['cljs.core', 'spelling_bee.db', 're_frame.core']);
+goog.addDependency("../reagent_modals/modals.js", ['reagent_modals.modals'], ['goog.dom', 'reagent.core', 'cljs.core', 'goog.events.EventType', 'goog.events']);
+goog.addDependency("../spelling_bee/views.js", ['spelling_bee.views'], ['reagent_modals.modals', 'reagent.core', 'cljs.core', 'clojure.string', 're_frame.core']);
+goog.addDependency("../spelling_bee/subs.js", ['spelling_bee.subs'], ['cljs.core', 're_frame.core']);
+goog.addDependency("../spelling_bee/core.js", ['spelling_bee.core'], ['goog.dom', 'spelling_bee.subs', 'goog.string', 'reagent.core', 'cljs.core', 'spelling_bee.events', 'spelling_bee.views', 're_frame.core', 'reagent.dom']);
 goog.addDependency("../figwheel/main/generated/dev_auto_test_runner.js", ['figwheel.main.generated.dev_auto_test_runner'], ['cljs.core', 'figwheel.main.testing']);
