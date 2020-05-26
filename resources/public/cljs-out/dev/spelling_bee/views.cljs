@@ -2,7 +2,10 @@
   (:require [reagent.core :as r :refer [atom]]
             [re-frame.core :as rf]
             [reagent-modals.modals :as reagent-modals]
-            [clojure.string :as s]))
+            [cljs.pprint]
+            [clojure.string :as s]
+            [goog.dom :as gdom]
+            [goog.events :as gevents]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utility functions
@@ -53,7 +56,7 @@
   [upper-rank]
   (rf/dispatch [:new-rank upper-rank]))
 
-
+; helper functions
 (defn- calculate-point
   "Returns point if a word is in word list"
   [word]
@@ -130,7 +133,7 @@
 
       :else                                               "Not in word list!")))
 
-;; handle event functions
+; handle event functions
 (defn- handle-submit
   "Handles click on submit button"
   []
@@ -147,12 +150,6 @@
             (dispatch-user-input "")))
       (dispatch-user-input ""))))
 
-(defn- handle-key-press
-  "Submits answer if user press Enter"
-  [e]
-  (if (= 13 (.-charCode e))
-    (handle-submit)))
-
 (defn- handle-delete
   []
   (let [current-answer @(rf/subscribe [:answer])
@@ -166,6 +163,34 @@
         other-letters (shuffle (rest chars))
         new-order (concat center-letter other-letters)]
     (dispatch-new-letter-order (vec new-order))))
+
+(defn- handle-enter-press
+  "Submits answer if user press Enter"
+  [e]
+  (if (= 13 (.-charCode e))
+    (handle-submit)))
+
+(defn- listen-to-key-press!
+  [DomElement]
+  (gevents/listen DomElement goog.events.EventType.KEYDOWN
+    (fn [evt]
+    (.preventDefault evt)
+    (println evt.keyCode)
+    (cond
+        (or (= 8 evt.keyCode) (= 46 evt.key)) ; delete
+        (let [current-answer @(rf/subscribe [:answer])
+              new-answer (subs current-answer 0 (- (count current-answer) 1))]
+            (dispatch-user-input new-answer))
+
+        (= 13 evt.keyCode) ; enter
+        (handle-submit)
+
+        (and (<= 65 evt.keyCode) (>= 90 evt.keyCode))
+        (let [current-answer @(rf/subscribe [:answer])
+            new-answer (str current-answer (s/upper-case evt.key))]
+            (dispatch-user-input new-answer))
+
+        :else (dispatch-user-input "")))))
 
 ;; buttons
 (defn shuffle-button
@@ -228,8 +253,11 @@
       [:div {:style {:margin-bottom "10px"}} ;; get input from user
         [:input {:type "text"
                 :value @(rf/subscribe [:answer])
-                :on-change #(dispatch-user-input (s/upper-case (-> % .-target .-value)))
-                :on-key-press #(handle-key-press %)}]]
+                :on-change #(dispatch-user-input (-> % 
+                                                     .-target 
+                                                     .-value 
+                                                     (s/upper-case)))
+                :on-key-press #(handle-enter-press %)}]]
       [:p "Your answer is: " @(rf/subscribe [:answer])]
       [:p {:class "TextFadeInAndOut"
            :style {:color :red
@@ -286,9 +314,12 @@
         (for [item (apply sorted-set words)]
           ^{:key item} [:li item])]]))
 
+(listen-to-key-press! js/document)
+
 (defn main
   []
   [:<>
+    ; [:div (add-annoying-alert-listener_goog! js/window)]
     [:h1 {:style {:color :orange :text-align :center}} "Welcome to Spelling Bee!!"]
     [:div {:class "col-6 col-md-6"}
       [display-letters @(rf/subscribe [:letters])]
