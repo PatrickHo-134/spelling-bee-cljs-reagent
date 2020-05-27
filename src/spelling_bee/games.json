@@ -3,7 +3,7 @@
     {
       "id": 1,
       "letters": ["a", "d", "g", "l", "n", "r", "u"],
-      "word-list": [
+      "wordlist": [
         "agar",
         "alga",
         "algal",
@@ -70,7 +70,7 @@
     {
       "id": 2,
       "letters": ["n", "a", "c", "d", "i", "h", "p"],
-      "word-list": [
+      "wordlist": [
         "apian",
         "cancan",
         "candid",
@@ -101,7 +101,7 @@
     {
       "id": 3,
       "letters": ["r", "a", "b", "f", "o", "p", "y"],
-      "word-list": [
+      "wordlist": [
         "babyproof",
         "afar",
         "affray",
@@ -132,7 +132,7 @@
     {
       "id": 3,
       "letters": ["c", "h", "i", "k", "m", "n", "u"],
-      "word-list": [
+      "wordlist": [
         "chic",
         "chichi",
         "chick",
