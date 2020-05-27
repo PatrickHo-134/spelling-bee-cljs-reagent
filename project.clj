@@ -14,6 +14,7 @@
                  [cljs-ajax "0.8.0"]
                  [day8.re-frame/http-fx "v0.2.0"]
                  [re-com "2.8.0"]
+                ;  [org.clojure/data.json "0.2.2"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]]
                  
   :source-paths ["src"]
