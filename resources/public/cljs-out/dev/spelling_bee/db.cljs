@@ -53,20 +53,45 @@
 ;                   :on-failure      [:bad-response]}
 ;      :db  (assoc db :loading? true)}))
 
+; (rf/reg-event-db               ;; when the GET succeeds 
+;   :process-response             ;; the GET callback dispatched this event  
+;   (fn
+;     [db [_ response]]           ;; extract the response from the dispatch event vector
+    
+;     (-> db
+;         (assoc :loading? false) ;; take away that modal 
+;         (assoc :data (js->clj response :keywordize-keys true)))))  ;; fairly lame processing
+
 (rf/reg-event-db               ;; when the GET succeeds 
   :process-response             ;; the GET callback dispatched this event  
   (fn
     [db [_ response]]           ;; extract the response from the dispatch event vector
     
-    (-> db
+    (let [data (.parse js/JSON (js->clj response :keywordize-keys true))
+          game (->> data .-games (rand-nth)) ; get a random game
+          letters (->> game .-letters (map s/upper-case) vec)
+          wordlist (->> game .-wordlist (map s/upper-case) set) 
+          ]
+      (-> db
         (assoc :loading? false) ;; take away that modal 
-        (assoc :data (js->clj response :keywordize-keys true)))))  ;; fairly lame processing
+        ; (assoc :data (js->clj response :keywordize-keys true))
+        (assoc :letters letters 
+               :word-list wordlist
+               :answer ""
+               :found-words #{}
+               :points [0]
+               :rank "Beginner"
+               )
+        ))
+  ))  ;; fairly lame processing
 
 (rf/reg-sub ; subscribe player rank
   :data
   (fn [db _]
     (:data db)))
 
-(let [data (.parse js/JSON @(rf/subscribe [:data]))]
-  (println (->> data .-games (rand-nth) .-id))
-)
+; (let [data (.parse js/JSON @(rf/subscribe [:data]))]
+;   (println (->> data .-games (rand-nth) .-wordlist))
+; )
+
+(println @(rf/subscribe [:word-list]))
