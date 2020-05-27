@@ -2,7 +2,6 @@
   (:require [reagent.core :as r :refer [atom]]
             [re-frame.core :as rf]
             [reagent-modals.modals :as reagent-modals]
-            [cljs.pprint]
             [clojure.string :as s]
             [goog.dom :as gdom]
             [goog.events :as gevents]))
@@ -185,43 +184,58 @@
 ;; buttons
 (defn shuffle-button
   []
-  [:input {:type "button"
-           :value "Shuffle"
-           :on-click #(handle-shuffle)}])
+  [:button 
+    {:class "btn btn-secondary btn-sm" 
+     :type "button"
+      :on-click #(handle-shuffle)}
+    "Shuffle"])
 
 (defn submit-button
   []
-  [:input {:type "button"
-           :value "Enter"
-           :on-click #(handle-submit)}])
+  [:button 
+    {:class "btn btn-success btn-sm"
+     :type "button"
+     :on-click #(handle-submit)}
+    "Enter"])
 
 (defn delete-button
   []
-  [:input {:type "button"
-           :value "Delete"
-           :on-click #(handle-delete)}])
+  [:button 
+    {:class "btn btn-danger btn-sm"
+     :type "button"
+     :on-click #(handle-delete)}
+    "Delete"])
 
 (defn letter-buttons
   "Creates a list of letter buttons"
   [chars]
   (for [letter chars]
-        ^{:key letter} [:input {:class "LetterButton"
-                                :type "button"
-                                :value letter
-                                :on-click #(dispatch-user-input 
-                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}]))
+        ^{:key letter} [:button {:class "btn btn-light"
+                                 :type "button"
+                                 :style {:font-weight :bold}
+                                 :on-click #(dispatch-user-input 
+                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}
+                                letter]))
 
 (defn list-letters
   "Lists letters in buttons"
   [chars]
-  [:div {:style {:margin "20px 50px 20px 50px"}}
+  [:div {:style {:margin "40px 50px 40px 50px"}}
     [:div (letter-buttons (subvec chars 1 4))]
-    [:input {:class "LetterButton"
-             :style {:background-color :orange} ; center letter button
-             :type "button"
-             :value (first chars)
-             :on-click #(dispatch-user-input (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}]
+    [:button {:class "btn btn-warning"
+              :type "button"
+              :style {:font-weight :bold}
+              :on-click #(dispatch-user-input (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}
+             (first chars)]
     [:div (letter-buttons (subvec chars 4 7))]])
+
+(defn request-new-game
+  []
+  [:button 
+    {:class "btn btn-warning"
+     :type "button"
+     :on-click  #(rf/dispatch [:initialize-db])}  ;; get data from the server !!
+    "NEW GAME"])
 
 ;; main components
 (defn display-letters
@@ -230,6 +244,8 @@
   [:div
     [:h3 "How many words can you make with these characters?"]
     [:p "Words must include center letter"]
+    [:div {:style {:margin-top "10px"}}
+      [request-new-game]]
     [list-letters @(rf/subscribe [:letters])]
     [submit-button]
     [shuffle-button]
@@ -298,7 +314,7 @@
     [:div
       [:h3 
         {:style {:color :orange}} 
-        "Total Point: " (reduce + points)]
+        "Point: " (reduce + points)]
       [:h4 
         {:style {:font-weight "bold" :margin-top "20px"}}
         (get-rank points @(rf/subscribe [:word-list]))
@@ -324,19 +340,9 @@
 
 (listen-to-key-press! js/document)
 
-(defn request-it-button
-  []
-  [:div {:class "button-class"
-         :on-click  #(dispatch [:request-it])}  ;; get data from the server !!
-         "I want it, now!"])
-
-
-
-
 (defn main
   []
   [:<>
-    [request-it-button]
     [:h1 {:style {:color :orange :text-align :center}} "Welcome to Spelling Bee!!"]
     [:div {:class "col-6 col-md-6"}
       [display-letters @(rf/subscribe [:letters])]
@@ -354,4 +360,4 @@
 ; pop-up on click from point slider => done
 ; filter out bad characters => done
 ; different colors for input letters => done
-; feeding data from external file
+; feeding data from external file => done
