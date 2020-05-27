@@ -324,9 +324,19 @@
 
 (listen-to-key-press! js/document)
 
+(defn request-it-button
+  []
+  [:div {:class "button-class"
+         :on-click  #(dispatch [:request-it])}  ;; get data from the server !!
+         "I want it, now!"])
+
+
+
+
 (defn main
   []
   [:<>
+    [request-it-button]
     [:h1 {:style {:color :orange :text-align :center}} "Welcome to Spelling Bee!!"]
     [:div {:class "col-6 col-md-6"}
       [display-letters @(rf/subscribe [:letters])]

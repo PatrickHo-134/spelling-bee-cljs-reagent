@@ -19,7 +19,7 @@ spelling_bee.core.mount_app_element = (function spelling_bee$core$mount_app_elem
 var temp__5457__auto__ = spelling_bee.core.get_app_element.call(null);
 if(cljs.core.truth_(temp__5457__auto__)){
 var el = temp__5457__auto__;
-re_frame.core.dispatch_sync.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"initialize","initialize",609952913)], null));
+re_frame.core.dispatch_sync.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"request-it","request-it",-900096096)], null));
 
 return spelling_bee.core.mount.call(null,el);
 } else {

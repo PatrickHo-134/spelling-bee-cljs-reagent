@@ -18,7 +18,7 @@
 
 (defn mount-app-element []
   (when-let [el (get-app-element)]
-    (rf/dispatch-sync [:initialize])
+    (rf/dispatch-sync [:request-it])
     (mount el)))
 
 ;; conditionally start your application based on the presence of an "app" element
