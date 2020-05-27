@@ -23,7 +23,6 @@
 ;      :points [0]
 ;      :rank "Beginner"}))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscribe to external data
 ; first version

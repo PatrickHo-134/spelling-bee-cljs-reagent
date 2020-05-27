@@ -123,9 +123,9 @@
 
       (and (not (in-list? word found-words)) 
            (not (pangram? word letters))
-           (in-list? word word-list))                "Very good!"
+           (in-list? word word-list))                     "Very good!"
 
-      (in-list? word found-words)                    "Repeated answer!"
+      (in-list? word found-words)                         "Repeated answer!"
 
       (not (include-center-letter? word (first letters))) "Missing center letter"
 
@@ -213,6 +213,7 @@
         ^{:key letter} [:button {:class "btn btn-light"
                                  :type "button"
                                  :style {:font-weight :bold}
+                                 :value letter
                                  :on-click #(dispatch-user-input 
                                             (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}
                                 letter]))
@@ -224,6 +225,7 @@
     [:div (letter-buttons (subvec chars 1 4))]
     [:button {:class "btn btn-warning"
               :type "button"
+              :value (first chars)
               :style {:font-weight :bold}
               :on-click #(dispatch-user-input (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}
              (first chars)]
@@ -271,7 +273,7 @@
 
           :else 
           [:span 
-            {:style {:opacity 0.5}}
+            {:style {:opacity 0.3}}
             letter]))
       [:span {:class "TextFadeInAndOut" :style {}} "|"]]))
 
