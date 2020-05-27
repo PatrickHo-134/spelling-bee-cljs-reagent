@@ -1,10 +1,10 @@
 # Spelling-bee
 
-This is a remade version of [New York Times' spelling bee game](https://www.nytimes.com/puzzles/spelling-bee) using Clojurescript and Reagent.
+This is a remade version of [New York Times' spelling bee game](https://www.nytimes.com/puzzles/spelling-bee) using Clojurescript, Reagent and Re-frame.
 
 ## Overview
 
-This project is part of my Clojure training program and used for demonstrating some important concepts in Clojurescript and Reagent.
+This project is part of my Clojure training program and used for demonstrating some important concepts in Clojurescript, Reagent and Re-frame.
 
 ## Development
 
@@ -22,13 +22,12 @@ and you should see an alert in the browser window.
 
 To clean all compiled files:
 
-	lein clean
+    lein clean
 
 To create a production build run:
 
-	lein clean
-	lein fig:min
-
+    lein clean
+    lein fig:min
 
 ## License
 

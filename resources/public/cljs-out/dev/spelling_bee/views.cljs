@@ -7,17 +7,16 @@
             [goog.dom :as gdom]
             [goog.events :as gevents]))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; utility functions
 (defn too-short?
   "Returns predicate value if a word has equal or less than 3 letters"
   [word]
   (>= 3 (count word)))
 
-(defn in-word-list?
-  "Returns predicate value if a word is in word list"
-  [word wordlist]
-  (some #(= word %) wordlist))
+(defn in-list?
+  "Returns predicate value if a value is in a list"
+  [val lst]
+  (some #(= val %) lst))
 
 (defn include-center-letter?
   "Returns predicate value if a word has center letter"
@@ -62,7 +61,7 @@
   [word]
   (let [results @(rf/subscribe [:word-list])
         letters @(rf/subscribe [:letters])]
-  (if (not (in-word-list? word results))
+  (if (not (in-list? word results))
     0
     (let [point (if (= 4 (count word)) 
                   1
@@ -120,14 +119,14 @@
 
       (too-short? word)                                   "Too short!"
 
-      (and (not (in-word-list? word found-words)) 
+      (and (not (in-list? word found-words)) 
            (pangram? word letters))                       "Genius!"
 
-      (and (not (in-word-list? word found-words)) 
+      (and (not (in-list? word found-words)) 
            (not (pangram? word letters))
-           (in-word-list? word word-list))                "Very good!"
+           (in-list? word word-list))                "Very good!"
 
-      (in-word-list? word found-words)                    "Repeated answer!"
+      (in-list? word found-words)                    "Repeated answer!"
 
       (not (include-center-letter? word (first letters))) "Missing center letter"
 
@@ -140,8 +139,8 @@
   (let [new-answer @(rf/subscribe [:answer])
         found-words @(rf/subscribe [:found-words])
         results @(rf/subscribe [:word-list])]
-    (if (and (not (in-word-list? new-answer found-words)) ; not in word-list and not a found word
-             (in-word-list? new-answer results))
+    (if (and (not (in-list? new-answer found-words)) ; not in word-list and not a found word
+             (in-list? new-answer results))
       (let [new-found-words (conj found-words new-answer)
             new-points (conj @(rf/subscribe [:points]) (calculate-point new-answer))]
         (do (dispatch-new-found-words new-found-words)
@@ -164,33 +163,24 @@
         new-order (concat center-letter other-letters)]
     (dispatch-new-letter-order (vec new-order))))
 
-(defn- handle-enter-press
-  "Submits answer if user press Enter"
-  [e]
-  (if (= 13 (.-charCode e))
-    (handle-submit)))
-
 (defn- listen-to-key-press!
   [DomElement]
   (gevents/listen DomElement goog.events.EventType.KEYDOWN
     (fn [evt]
     (.preventDefault evt)
-    (println evt.keyCode)
     (cond
-        (or (= 8 evt.keyCode) (= 46 evt.key)) ; delete
-        (let [current-answer @(rf/subscribe [:answer])
-              new-answer (subs current-answer 0 (- (count current-answer) 1))]
-            (dispatch-user-input new-answer))
+        (or (= 8 evt.keyCode) (= 46 evt.keyCode)) ; delete
+        (handle-delete)
 
         (= 13 evt.keyCode) ; enter
         (handle-submit)
 
         (and (<= 65 evt.keyCode) (>= 90 evt.keyCode))
         (let [current-answer @(rf/subscribe [:answer])
-            new-answer (str current-answer (s/upper-case evt.key))]
+              new-answer (str current-answer (s/upper-case evt.key))]
             (dispatch-user-input new-answer))
 
-        :else (dispatch-user-input "")))))
+        :else (dispatch-user-input @(rf/subscribe [:answer]))))))
 
 ;; buttons
 (defn shuffle-button
@@ -245,20 +235,37 @@
     [shuffle-button]
     [delete-button]])
 
-(defn get-answer 
+(defn display-answer
+  "Displays typed in text from user"
+  []
+  (let [answer @(rf/subscribe [:answer])]
+    [:p
+      {:style 
+        {:font-weight :bold
+         :font-size :large}}
+      (for [letter (seq answer)]
+        (cond 
+          (in-list? letter (rest @(rf/subscribe [:letters])))
+          [:span letter]
+
+          (= letter (first @(rf/subscribe [:letters])))
+          [:span 
+            {:style {:color :orange}}
+            letter]
+
+          :else 
+          [:span 
+            {:style {:opacity 0.5}}
+            letter]))
+      [:span {:class "TextFadeInAndOut" :style {}} "|"]]))
+
+(defn type-in-answer 
   []
   (fn []
     [:div {:style {:margin-top "50px"}}
-      [:h3 "Enter your answer: "]
+      [:h4 "Enter your answer: "]
       [:div {:style {:margin-bottom "10px"}} ;; get input from user
-        [:input {:type "text"
-                :value @(rf/subscribe [:answer])
-                :on-change #(dispatch-user-input (-> % 
-                                                     .-target 
-                                                     .-value 
-                                                     (s/upper-case)))
-                :on-key-press #(handle-enter-press %)}]]
-      [:p "Your answer is: " @(rf/subscribe [:answer])]
+        [display-answer]]
       [:p {:class "TextFadeInAndOut"
            :style {:color :red
                    :margin "0 auto"
@@ -292,7 +299,8 @@
       [:h3 
         {:style {:color :orange}} 
         "Total Point: " (reduce + points)]
-      [:h4 {:style {:font-weight "bold" :margin-top "20px"}}
+      [:h4 
+        {:style {:font-weight "bold" :margin-top "20px"}}
         (get-rank points @(rf/subscribe [:word-list]))
         [reagent-modals/modal-window] ; need to add modal-window before bringing up modal window
         [:input {:class "slider"
@@ -319,16 +327,14 @@
 (defn main
   []
   [:<>
-    ; [:div (add-annoying-alert-listener_goog! js/window)]
     [:h1 {:style {:color :orange :text-align :center}} "Welcome to Spelling Bee!!"]
     [:div {:class "col-6 col-md-6"}
       [display-letters @(rf/subscribe [:letters])]
-      [get-answer]]
+      [type-in-answer]]
     [:div {:style {:margin-top "50px"}
            :class "col-6 col-md-6"}
       [display-points]
       [list-found-words]]])
-
 
 ; modify letters displaying function => done
 ; adding delete button => done
@@ -336,5 +342,6 @@
 ; point slider => done
 ; add player ranking => done
 ; pop-up on click from point slider => done
-; filter out bad characters
-; different colors for input letters
+; filter out bad characters => done
+; different colors for input letters => done
+; feeding data from external file

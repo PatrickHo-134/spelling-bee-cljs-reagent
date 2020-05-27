@@ -1,7 +1,7 @@
 (ns spelling-bee.events
-    (:require
-        [spelling-bee.db]
-        [re-frame.core :as rf]))
+  (:require
+    [spelling-bee.db]
+    [re-frame.core :as rf]))
 
 ;; event handlers
 (rf/reg-event-db
