@@ -314,9 +314,6 @@
   []
   (let [points @(rf/subscribe [:points])]
     [:div
-      [:h3 
-        {:style {:color :orange}} 
-        "Point: " (reduce + points)]
       [:h4 
         {:style {:font-weight "bold" :margin-top "20px"}}
         (get-rank points @(rf/subscribe [:word-list]))
@@ -328,7 +325,10 @@
                  :min 0
                  :max (get-max-point)
                  :disabled false
-                 :on-click #(reagent-modals/modal! (ranking-information))}]]]))
+                 :on-click #(reagent-modals/modal! (ranking-information))}]]
+      [:h3 
+        {:style {:color :orange}} 
+        "Point: " (reduce + points)]]))
 
 (defn list-found-words
   "Displays all items from a sequence to browser"
@@ -353,13 +353,3 @@
            :class "col-6 col-md-6"}
       [display-points]
       [list-found-words]]])
-
-; modify letters displaying function => done
-; adding delete button => done
-; adding shuffle button => done
-; point slider => done
-; add player ranking => done
-; pop-up on click from point slider => done
-; filter out bad characters => done
-; different colors for input letters => done
-; feeding data from external file => done

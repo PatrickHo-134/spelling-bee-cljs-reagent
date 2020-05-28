@@ -1,11 +1,18 @@
 (ns spelling-bee.events
   (:require
     [ajax.core :as ajax :refer [GET]]
-    [spelling-bee.db :refer [myurl default-db]]
+    [spelling-bee.db :refer [myurl backup-db]]
     [clojure.string :as s]
     [re-frame.core :as rf]))
 
 ;; event handlers
+
+; old method to initialize db
+; (rf/reg-event-db ; initialize db
+;   :initialize-db
+;   (fn [_ _]
+;     backup-db))
+
 (rf/reg-event-db
   :new-list
   (fn [db [_ new-list]]
@@ -41,8 +48,9 @@
   (fn [db [_ upper-rank]]
     (assoc db :rank upper-rank)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscribe to external data
+
 ; first version -- bad version
 ; (rf/reg-event-db
 ;   :request-data             ;; <-- the button dispatched this id
@@ -64,14 +72,16 @@
   (fn                ;; <-- the handler function
     [{db :db} _]     ;; <-- 1st argument is coeffect, from which we extract db 
 
+    (println "request data...")
     ;; we return a map of (side) effects
-    {:http-xhrio {:method          :get
+    {:db backup-db
+     :http-xhrio {:method          :get
                   :uri             myurl
                   :format          (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true}) ; {:keywords? true} 
                   :on-success      [:process-response]
                   :on-failure      [:bad-response]}
-    ;  :db  (:do-something)
+    ;  :db  (do-some-thing) ; this will cause trouble on loading the app
     }))
 
 (rf/reg-event-db               ;; when the GET succeeds 
@@ -97,7 +107,7 @@
   :bad-response 
   (fn
     [db [_ _]]
-    default-db)) ; use back-up db if GET request fails 
+    backup-db)) ; use back-up db if GET request fails 
 
 ; event handler for first version of request-data
 ; (rf/reg-event-db               ;; when the GET succeeds 
@@ -125,5 +135,3 @@
 ;                  :found-words #{}
 ;                  :points [0]
 ;                  :rank "Beginner")))))  ;; fairly lame processing
-
-; (println rf.db/app-db)

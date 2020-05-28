@@ -11,14 +11,9 @@
 (defonce results #{"apian" "cancan" "candid" "canid" "canna" "chain" "chin" "china" "cinch" "hand" "handicap" "hind" "inch" "indicia" "naan" "nada" "naiad" "nana" "niacin" "pain" "panda" "panic" "panini" "picnic" "pinch"})
 (defonce word-list (map s/upper-case results))
 (defonce letters [\N \A \C \D \I \H \P]) ;; always put center-letter at the beginning of the list
-(defonce default-db {:word-list word-list
-                     :letters letters
-                     :answer ""
-                     :found-words #{}
-                     :points [0]
-                     :rank "Beginner"})
-
-(rf/reg-event-db ; initialize db
-  :initialize-db
-  (fn [_ _]
-    default-db))
+(defonce backup-db {:word-list word-list
+                    :letters letters
+                    :answer ""
+                    :found-words #{}
+                    :points [0]
+                    :rank "Beginner"})

@@ -18,8 +18,7 @@
 
 (defn mount-app-element []
   (when-let [el (get-app-element)]
-    ; (println re-frame.db/app-db)
-    (rf/dispatch-sync [:initialize-db])
+    (rf/dispatch-sync [:request-data])
     (mount el)))
 
 ;; conditionally start your application based on the presence of an "app" element
