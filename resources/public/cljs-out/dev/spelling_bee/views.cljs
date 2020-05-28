@@ -29,7 +29,7 @@
 
 ;; a function to check profanity maybe needed
 
-;; event dispatch
+;; event dispatch functions
 (defn dispatch-new-word-list
   [word-list]
   (rf/dispatch [:new-list word-list]))
