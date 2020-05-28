@@ -17,16 +17,16 @@ return ((3) >= cljs.core.count.call(null,word));
  * Returns predicate value if a value is in a list
  */
 spelling_bee.views.in_list_QMARK_ = (function spelling_bee$views$in_list_QMARK_(val,lst){
-return cljs.core.some.call(null,(function (p1__8992_SHARP_){
-return cljs.core._EQ_.call(null,val,p1__8992_SHARP_);
+return cljs.core.some.call(null,(function (p1__9099_SHARP_){
+return cljs.core._EQ_.call(null,val,p1__9099_SHARP_);
 }),lst);
 });
 /**
  * Returns predicate value if a word has center letter
  */
 spelling_bee.views.include_center_letter_QMARK_ = (function spelling_bee$views$include_center_letter_QMARK_(word,c_letter){
-return cljs.core.some.call(null,(function (p1__8993_SHARP_){
-return cljs.core._EQ_.call(null,c_letter,clojure.string.upper_case.call(null,p1__8993_SHARP_));
+return cljs.core.some.call(null,(function (p1__9100_SHARP_){
+return cljs.core._EQ_.call(null,c_letter,clojure.string.upper_case.call(null,p1__9100_SHARP_));
 }),cljs.core.set.call(null,clojure.string.upper_case.call(null,word)));
 });
 /**
@@ -245,29 +245,29 @@ return spelling_bee.views.handle_delete.call(null);
  * Creates a list of letter buttons
  */
 spelling_bee.views.letter_buttons = (function spelling_bee$views$letter_buttons(chars){
-var iter__4523__auto__ = (function spelling_bee$views$letter_buttons_$_iter__8995(s__8996){
+var iter__4523__auto__ = (function spelling_bee$views$letter_buttons_$_iter__9102(s__9103){
 return (new cljs.core.LazySeq(null,(function (){
-var s__8996__$1 = s__8996;
+var s__9103__$1 = s__9103;
 while(true){
-var temp__5457__auto__ = cljs.core.seq.call(null,s__8996__$1);
+var temp__5457__auto__ = cljs.core.seq.call(null,s__9103__$1);
 if(temp__5457__auto__){
-var s__8996__$2 = temp__5457__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,s__8996__$2)){
-var c__4521__auto__ = cljs.core.chunk_first.call(null,s__8996__$2);
+var s__9103__$2 = temp__5457__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,s__9103__$2)){
+var c__4521__auto__ = cljs.core.chunk_first.call(null,s__9103__$2);
 var size__4522__auto__ = cljs.core.count.call(null,c__4521__auto__);
-var b__8998 = cljs.core.chunk_buffer.call(null,size__4522__auto__);
-if((function (){var i__8997 = (0);
+var b__9105 = cljs.core.chunk_buffer.call(null,size__4522__auto__);
+if((function (){var i__9104 = (0);
 while(true){
-if((i__8997 < size__4522__auto__)){
-var letter = cljs.core._nth.call(null,c__4521__auto__,i__8997);
-cljs.core.chunk_append.call(null,b__8998,cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"class","class",-2030961996),"btn btn-light",new cljs.core.Keyword(null,"type","type",1174270348),"button",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"font-weight","font-weight",2085804583),new cljs.core.Keyword(null,"bold","bold",-116809535)], null),new cljs.core.Keyword(null,"value","value",305978217),letter,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (i__8997,letter,c__4521__auto__,size__4522__auto__,b__8998,s__8996__$2,temp__5457__auto__){
-return (function (p1__8994_SHARP_){
-return spelling_bee.views.dispatch_user_input.call(null,[cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"answer","answer",-742633163)], null)))),cljs.core.str.cljs$core$IFn$_invoke$arity$1(p1__8994_SHARP_.target.value)].join(''));
-});})(i__8997,letter,c__4521__auto__,size__4522__auto__,b__8998,s__8996__$2,temp__5457__auto__))
+if((i__9104 < size__4522__auto__)){
+var letter = cljs.core._nth.call(null,c__4521__auto__,i__9104);
+cljs.core.chunk_append.call(null,b__9105,cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"class","class",-2030961996),"btn btn-light",new cljs.core.Keyword(null,"type","type",1174270348),"button",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"font-weight","font-weight",2085804583),new cljs.core.Keyword(null,"bold","bold",-116809535)], null),new cljs.core.Keyword(null,"value","value",305978217),letter,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (i__9104,letter,c__4521__auto__,size__4522__auto__,b__9105,s__9103__$2,temp__5457__auto__){
+return (function (p1__9101_SHARP_){
+return spelling_bee.views.dispatch_user_input.call(null,[cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"answer","answer",-742633163)], null)))),cljs.core.str.cljs$core$IFn$_invoke$arity$1(p1__9101_SHARP_.target.value)].join(''));
+});})(i__9104,letter,c__4521__auto__,size__4522__auto__,b__9105,s__9103__$2,temp__5457__auto__))
 ], null),letter], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),letter], null)));
 
-var G__8999 = (i__8997 + (1));
-i__8997 = G__8999;
+var G__9106 = (i__9104 + (1));
+i__9104 = G__9106;
 continue;
 } else {
 return true;
@@ -275,17 +275,17 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__8998),spelling_bee$views$letter_buttons_$_iter__8995.call(null,cljs.core.chunk_rest.call(null,s__8996__$2)));
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9105),spelling_bee$views$letter_buttons_$_iter__9102.call(null,cljs.core.chunk_rest.call(null,s__9103__$2)));
 } else {
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__8998),null);
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9105),null);
 }
 } else {
-var letter = cljs.core.first.call(null,s__8996__$2);
-return cljs.core.cons.call(null,cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"class","class",-2030961996),"btn btn-light",new cljs.core.Keyword(null,"type","type",1174270348),"button",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"font-weight","font-weight",2085804583),new cljs.core.Keyword(null,"bold","bold",-116809535)], null),new cljs.core.Keyword(null,"value","value",305978217),letter,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (letter,s__8996__$2,temp__5457__auto__){
-return (function (p1__8994_SHARP_){
-return spelling_bee.views.dispatch_user_input.call(null,[cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"answer","answer",-742633163)], null)))),cljs.core.str.cljs$core$IFn$_invoke$arity$1(p1__8994_SHARP_.target.value)].join(''));
-});})(letter,s__8996__$2,temp__5457__auto__))
-], null),letter], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),letter], null)),spelling_bee$views$letter_buttons_$_iter__8995.call(null,cljs.core.rest.call(null,s__8996__$2)));
+var letter = cljs.core.first.call(null,s__9103__$2);
+return cljs.core.cons.call(null,cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"class","class",-2030961996),"btn btn-light",new cljs.core.Keyword(null,"type","type",1174270348),"button",new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"font-weight","font-weight",2085804583),new cljs.core.Keyword(null,"bold","bold",-116809535)], null),new cljs.core.Keyword(null,"value","value",305978217),letter,new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (letter,s__9103__$2,temp__5457__auto__){
+return (function (p1__9101_SHARP_){
+return spelling_bee.views.dispatch_user_input.call(null,[cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"answer","answer",-742633163)], null)))),cljs.core.str.cljs$core$IFn$_invoke$arity$1(p1__9101_SHARP_.target.value)].join(''));
+});})(letter,s__9103__$2,temp__5457__auto__))
+], null),letter], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),letter], null)),spelling_bee$views$letter_buttons_$_iter__9102.call(null,cljs.core.rest.call(null,s__9103__$2)));
 }
 } else {
 return null;
@@ -300,8 +300,8 @@ return iter__4523__auto__.call(null,chars);
  * Lists letters in buttons
  */
 spelling_bee.views.list_letters = (function spelling_bee$views$list_letters(chars){
-return new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"margin","margin",-995903681),"40px 50px 40px 50px"], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),spelling_bee.views.letter_buttons.call(null,cljs.core.subvec.call(null,chars,(1),(4)))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"class","class",-2030961996),"btn btn-warning",new cljs.core.Keyword(null,"type","type",1174270348),"button",new cljs.core.Keyword(null,"value","value",305978217),cljs.core.first.call(null,chars),new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"font-weight","font-weight",2085804583),new cljs.core.Keyword(null,"bold","bold",-116809535)], null),new cljs.core.Keyword(null,"on-click","on-click",1632826543),(function (p1__9000_SHARP_){
-return spelling_bee.views.dispatch_user_input.call(null,[cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"answer","answer",-742633163)], null)))),cljs.core.str.cljs$core$IFn$_invoke$arity$1(p1__9000_SHARP_.target.value)].join(''));
+return new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"margin","margin",-995903681),"40px 50px 40px 50px"], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),spelling_bee.views.letter_buttons.call(null,cljs.core.subvec.call(null,chars,(1),(4)))], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button","button",1456579943),new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null,"class","class",-2030961996),"btn btn-warning",new cljs.core.Keyword(null,"type","type",1174270348),"button",new cljs.core.Keyword(null,"value","value",305978217),cljs.core.first.call(null,chars),new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"font-weight","font-weight",2085804583),new cljs.core.Keyword(null,"bold","bold",-116809535)], null),new cljs.core.Keyword(null,"on-click","on-click",1632826543),(function (p1__9107_SHARP_){
+return spelling_bee.views.dispatch_user_input.call(null,[cljs.core.str.cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"answer","answer",-742633163)], null)))),cljs.core.str.cljs$core$IFn$_invoke$arity$1(p1__9107_SHARP_.target.value)].join(''));
 })], null),cljs.core.first.call(null,chars)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),spelling_bee.views.letter_buttons.call(null,cljs.core.subvec.call(null,chars,(4),(7)))], null)], null);
 });
 spelling_bee.views.request_new_game = (function spelling_bee$views$request_new_game(){
@@ -321,27 +321,27 @@ return new cljs.core.PersistentVector(null, 8, 5, cljs.core.PersistentVector.EMP
 spelling_bee.views.display_answer = (function spelling_bee$views$display_answer(){
 var answer = cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"answer","answer",-742633163)], null)));
 return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p","p",151049309),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"font-weight","font-weight",2085804583),new cljs.core.Keyword(null,"bold","bold",-116809535),new cljs.core.Keyword(null,"font-size","font-size",-1847940346),new cljs.core.Keyword(null,"large","large",-196820544)], null)], null),(function (){var iter__4523__auto__ = ((function (answer){
-return (function spelling_bee$views$display_answer_$_iter__9001(s__9002){
+return (function spelling_bee$views$display_answer_$_iter__9108(s__9109){
 return (new cljs.core.LazySeq(null,((function (answer){
 return (function (){
-var s__9002__$1 = s__9002;
+var s__9109__$1 = s__9109;
 while(true){
-var temp__5457__auto__ = cljs.core.seq.call(null,s__9002__$1);
+var temp__5457__auto__ = cljs.core.seq.call(null,s__9109__$1);
 if(temp__5457__auto__){
-var s__9002__$2 = temp__5457__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,s__9002__$2)){
-var c__4521__auto__ = cljs.core.chunk_first.call(null,s__9002__$2);
+var s__9109__$2 = temp__5457__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,s__9109__$2)){
+var c__4521__auto__ = cljs.core.chunk_first.call(null,s__9109__$2);
 var size__4522__auto__ = cljs.core.count.call(null,c__4521__auto__);
-var b__9004 = cljs.core.chunk_buffer.call(null,size__4522__auto__);
-if((function (){var i__9003 = (0);
+var b__9111 = cljs.core.chunk_buffer.call(null,size__4522__auto__);
+if((function (){var i__9110 = (0);
 while(true){
-if((i__9003 < size__4522__auto__)){
-var letter = cljs.core._nth.call(null,c__4521__auto__,i__9003);
-cljs.core.chunk_append.call(null,b__9004,(cljs.core.truth_(spelling_bee.views.in_list_QMARK_.call(null,letter,cljs.core.rest.call(null,cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"letters","letters",2098125298)], null))))))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),letter], null):((cljs.core._EQ_.call(null,letter,cljs.core.first.call(null,cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"letters","letters",2098125298)], null))))))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"color","color",1011675173),new cljs.core.Keyword(null,"orange","orange",73816386)], null)], null),letter], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"opacity","opacity",397153780),0.3], null)], null),letter], null)
+if((i__9110 < size__4522__auto__)){
+var letter = cljs.core._nth.call(null,c__4521__auto__,i__9110);
+cljs.core.chunk_append.call(null,b__9111,(cljs.core.truth_(spelling_bee.views.in_list_QMARK_.call(null,letter,cljs.core.rest.call(null,cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"letters","letters",2098125298)], null))))))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),letter], null):((cljs.core._EQ_.call(null,letter,cljs.core.first.call(null,cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"letters","letters",2098125298)], null))))))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"color","color",1011675173),new cljs.core.Keyword(null,"orange","orange",73816386)], null)], null),letter], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"opacity","opacity",397153780),0.3], null)], null),letter], null)
 )));
 
-var G__9005 = (i__9003 + (1));
-i__9003 = G__9005;
+var G__9112 = (i__9110 + (1));
+i__9110 = G__9112;
 continue;
 } else {
 return true;
@@ -349,14 +349,14 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9004),spelling_bee$views$display_answer_$_iter__9001.call(null,cljs.core.chunk_rest.call(null,s__9002__$2)));
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9111),spelling_bee$views$display_answer_$_iter__9108.call(null,cljs.core.chunk_rest.call(null,s__9109__$2)));
 } else {
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9004),null);
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9111),null);
 }
 } else {
-var letter = cljs.core.first.call(null,s__9002__$2);
+var letter = cljs.core.first.call(null,s__9109__$2);
 return cljs.core.cons.call(null,(cljs.core.truth_(spelling_bee.views.in_list_QMARK_.call(null,letter,cljs.core.rest.call(null,cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"letters","letters",2098125298)], null))))))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),letter], null):((cljs.core._EQ_.call(null,letter,cljs.core.first.call(null,cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"letters","letters",2098125298)], null))))))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"color","color",1011675173),new cljs.core.Keyword(null,"orange","orange",73816386)], null)], null),letter], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"opacity","opacity",397153780),0.3], null)], null),letter], null)
-)),spelling_bee$views$display_answer_$_iter__9001.call(null,cljs.core.rest.call(null,s__9002__$2)));
+)),spelling_bee$views$display_answer_$_iter__9108.call(null,cljs.core.rest.call(null,s__9109__$2)));
 }
 } else {
 return null;
@@ -393,26 +393,26 @@ return reagent_modals.modals.modal_BANG_.call(null,spelling_bee.views.ranking_in
 spelling_bee.views.list_found_words = (function spelling_bee$views$list_found_words(){
 var words = cljs.core.deref.call(null,re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"found-words","found-words",1852804480)], null)));
 return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h3","h3",2067611163),"Found words (",cljs.core.count.call(null,words),")"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"ol","ol",932524051),(function (){var iter__4523__auto__ = ((function (words){
-return (function spelling_bee$views$list_found_words_$_iter__9006(s__9007){
+return (function spelling_bee$views$list_found_words_$_iter__9113(s__9114){
 return (new cljs.core.LazySeq(null,((function (words){
 return (function (){
-var s__9007__$1 = s__9007;
+var s__9114__$1 = s__9114;
 while(true){
-var temp__5457__auto__ = cljs.core.seq.call(null,s__9007__$1);
+var temp__5457__auto__ = cljs.core.seq.call(null,s__9114__$1);
 if(temp__5457__auto__){
-var s__9007__$2 = temp__5457__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,s__9007__$2)){
-var c__4521__auto__ = cljs.core.chunk_first.call(null,s__9007__$2);
+var s__9114__$2 = temp__5457__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,s__9114__$2)){
+var c__4521__auto__ = cljs.core.chunk_first.call(null,s__9114__$2);
 var size__4522__auto__ = cljs.core.count.call(null,c__4521__auto__);
-var b__9009 = cljs.core.chunk_buffer.call(null,size__4522__auto__);
-if((function (){var i__9008 = (0);
+var b__9116 = cljs.core.chunk_buffer.call(null,size__4522__auto__);
+if((function (){var i__9115 = (0);
 while(true){
-if((i__9008 < size__4522__auto__)){
-var item = cljs.core._nth.call(null,c__4521__auto__,i__9008);
-cljs.core.chunk_append.call(null,b__9009,cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"li","li",723558921),item], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),item], null)));
+if((i__9115 < size__4522__auto__)){
+var item = cljs.core._nth.call(null,c__4521__auto__,i__9115);
+cljs.core.chunk_append.call(null,b__9116,cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"li","li",723558921),item], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),item], null)));
 
-var G__9010 = (i__9008 + (1));
-i__9008 = G__9010;
+var G__9117 = (i__9115 + (1));
+i__9115 = G__9117;
 continue;
 } else {
 return true;
@@ -420,13 +420,13 @@ return true;
 break;
 }
 })()){
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9009),spelling_bee$views$list_found_words_$_iter__9006.call(null,cljs.core.chunk_rest.call(null,s__9007__$2)));
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9116),spelling_bee$views$list_found_words_$_iter__9113.call(null,cljs.core.chunk_rest.call(null,s__9114__$2)));
 } else {
-return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9009),null);
+return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__9116),null);
 }
 } else {
-var item = cljs.core.first.call(null,s__9007__$2);
-return cljs.core.cons.call(null,cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"li","li",723558921),item], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),item], null)),spelling_bee$views$list_found_words_$_iter__9006.call(null,cljs.core.rest.call(null,s__9007__$2)));
+var item = cljs.core.first.call(null,s__9114__$2);
+return cljs.core.cons.call(null,cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"li","li",723558921),item], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),item], null)),spelling_bee$views$list_found_words_$_iter__9113.call(null,cljs.core.rest.call(null,s__9114__$2)));
 }
 } else {
 return null;

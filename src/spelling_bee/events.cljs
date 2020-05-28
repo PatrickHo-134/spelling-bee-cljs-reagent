@@ -79,13 +79,13 @@
                   :uri             myurl
                   :format          (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true}) ; {:keywords? true} 
-                  :on-success      [:process-response]
+                  :on-success      [:success-response]
                   :on-failure      [:bad-response]}
     ;  :db  (do-some-thing) ; this will cause trouble on loading the app
     }))
 
 (rf/reg-event-db               ;; when the GET succeeds 
-  :process-response             ;; the GET callback dispatched this event  
+  :success-response             ;; the GET callback dispatched this event  
   (fn
     [db [_ response]]           ;; extract the response from the dispatch event vector
     (let [game      (rand-nth (:games response)) ; get a random game
