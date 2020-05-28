@@ -11,6 +11,9 @@
                  [reagent "0.8.1"]
                  [figwheel "0.5.19"]
                  [re-frame "1.0.0-rc1"]
+                 [cljs-ajax "0.8.0"]
+                 [day8.re-frame/http-fx "v0.2.0"]
+                 [re-com "2.8.0"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]]
                  
   :source-paths ["src"]
