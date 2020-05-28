@@ -119,7 +119,7 @@
       (too-short? word)                                   "Too short!"
 
       (and (not (in-list? word found-words)) 
-           (pangram? word letters))                       "Genius!"
+           (pangram? word letters))                       "Genius!" ; pangram!
 
       (and (not (in-list? word found-words)) 
            (not (pangram? word letters))
@@ -236,7 +236,7 @@
   [:button 
     {:class "btn btn-warning"
      :type "button"
-     :on-click  #(rf/dispatch [:initialize-db])}  ;; get data from the server !!
+     :on-click  #(rf/dispatch [:request-data])}  ;; get data from the server !!
     "NEW GAME"])
 
 ;; main components

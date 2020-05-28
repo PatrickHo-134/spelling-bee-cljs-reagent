@@ -18,6 +18,7 @@
 
 (defn mount-app-element []
   (when-let [el (get-app-element)]
+    ; (println re-frame.db/app-db)
     (rf/dispatch-sync [:initialize-db])
     (mount el)))
 
