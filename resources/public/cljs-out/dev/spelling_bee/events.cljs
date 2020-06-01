@@ -66,6 +66,33 @@
 ;      ;; update a flag in `app-db` ... presumably to trigger UI changes
 ;      (assoc db :loading? true)))    ;; pure handlers must return a db
 
+; event handler for first version of request-data
+; (rf/reg-event-db               ;; when the GET succeeds 
+;   :process-response             ;; the GET callback dispatched this event  
+;   (fn
+;     [db [_ response]]           ;; extract the response from the dispatch event vector
+;     (println response)
+;     (let [data (.parse js/JSON (js->clj response :keywordize-keys true))
+;           game      (->> data 
+;                          .-games 
+;                          (rand-nth)) ; get a random game
+;           letters   (->> game 
+;                          .-letters 
+;                          (map s/upper-case) 
+;                          vec)
+;           wordlist  (->> game 
+;                          .-wordlist 
+;                          (map s/upper-case) 
+;                          set)]
+;       (-> db
+;           (assoc :loading? false) ;; take away that modal 
+;           (assoc :letters letters 
+;                  :word-list wordlist
+;                  :answer ""
+;                  :found-words #{}
+;                  :points [0]
+;                  :rank "Beginner")))))  ;; fairly lame processing
+
 ; second version
 (rf/reg-event-fx        ;; <-- note the `-fx` extension
   :request-data        ;; <-- the event id
@@ -109,29 +136,4 @@
     [db [_ _]]
     backup-db)) ; use back-up db if GET request fails 
 
-; event handler for first version of request-data
-; (rf/reg-event-db               ;; when the GET succeeds 
-;   :process-response             ;; the GET callback dispatched this event  
-;   (fn
-;     [db [_ response]]           ;; extract the response from the dispatch event vector
-;     (println response)
-;     (let [data (.parse js/JSON (js->clj response :keywordize-keys true))
-;           game      (->> data 
-;                          .-games 
-;                          (rand-nth)) ; get a random game
-;           letters   (->> game 
-;                          .-letters 
-;                          (map s/upper-case) 
-;                          vec)
-;           wordlist  (->> game 
-;                          .-wordlist 
-;                          (map s/upper-case) 
-;                          set)]
-;       (-> db
-;           (assoc :loading? false) ;; take away that modal 
-;           (assoc :letters letters 
-;                  :word-list wordlist
-;                  :answer ""
-;                  :found-words #{}
-;                  :points [0]
-;                  :rank "Beginner")))))  ;; fairly lame processing
+

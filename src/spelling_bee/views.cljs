@@ -185,37 +185,43 @@
 (defn shuffle-button
   []
   [:button 
-    {:class "btn btn-secondary btn-sm" 
+    {:class "btn btn-light btn-sm" 
      :type "button"
-      :on-click #(handle-shuffle)}
-    "Shuffle"])
+     :style {:margin "5px 5px" :width "60px"}
+     :on-click #(handle-shuffle)}
+    "shuffle"])
 
 (defn submit-button
   []
   [:button 
     {:class "btn btn-success btn-sm"
      :type "button"
+     :style {:width "60px"}
      :on-click #(handle-submit)}
-    "Enter"])
+    "enter"])
 
 (defn delete-button
   []
   [:button 
     {:class "btn btn-danger btn-sm"
      :type "button"
+     :style {:width "60px"}
      :on-click #(handle-delete)}
-    "Delete"])
+    "delete"])
 
 (defn letter-buttons
   "Creates a list of letter buttons"
   [chars]
   (for [letter chars]
-        ^{:key letter} [:button {:class "btn btn-light"
+        ^{:key letter} [:button {:class "btn btn-light btn-md border-warning"
                                  :type "button"
-                                 :style {:font-weight :bold}
+                                 :style {:font-weight :bold 
+                                         :width "40px" 
+                                         :height "40px"
+                                         :margin "1px"}
                                  :value letter
                                  :on-click #(dispatch-user-input 
-                                            (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}
+                                              (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}
                                 letter]))
 
 (defn list-letters
@@ -223,10 +229,12 @@
   [chars]
   [:div {:style {:margin "40px 50px 40px 50px"}}
     [:div (letter-buttons (subvec chars 1 4))]
-    [:button {:class "btn btn-warning"
+    [:button {:class "btn btn-warning btn-md border-warning"
               :type "button"
               :value (first chars)
-              :style {:font-weight :bold}
+              :style {:font-weight :bold 
+                      :width "40px" 
+                      :height "40px"}
               :on-click #(dispatch-user-input (str @(rf/subscribe [:answer]) (-> % .-target .-value)))}
              (first chars)]
     [:div (letter-buttons (subvec chars 4 7))]])
@@ -236,65 +244,93 @@
   [:button 
     {:class "btn btn-warning"
      :type "button"
+     :style {:width "110px"}
      :on-click  #(rf/dispatch [:request-data])}  ;; get data from the server !!
-    "NEW GAME"])
+    "New Game"])
 
 ;; main components
+(defn game-rules ; ranking points change depending on the game
+  []
+  [:div {:style {:margin "20px 20px 20px 20px" :text-align :left}}
+    [:h2 "How to Play"]
+    [:h5 "Create words using letters given from the boxes"]
+    [:ul
+      [:li "Words must contain at least 4 letters."]
+      [:li "Words must include the center letter."]
+      [:li "Our word list does not include words that are obscure, hyphenated, or proper nouns."]
+      [:li "No cussing either, sorry."]
+      [:li "Letters can be used more than once."]]
+    [:h5 "Score points to increase your rating."]
+    [:ul
+      [:li "4-letter words are worth 1 point each."]
+      [:li "Longer words earn 1 point per letter."]
+      [:li "Each puzzle includes at least one “pangram” which uses every letter. These are worth 7 extra points!"]]])
+
+(defn help-button
+  []
+  [:button 
+    {:class "btn border-warning btn-sm"
+     :type "button"
+     :style {:width "60px"}
+     :on-click  #(reagent-modals/modal! (game-rules))}
+    "Help"])
+
 (defn display-letters
   "Displays list of characters to browser"
   []
   [:div
     [:h3 "How many words can you make with these characters?"]
-    [:p "Words must include center letter"]
     [:div {:style {:margin-top "10px"}}
       [request-new-game]]
     [list-letters @(rf/subscribe [:letters])]
-    [submit-button]
-    [shuffle-button]
-    [delete-button]])
+    [:div
+      [submit-button]
+      [shuffle-button]
+      [delete-button]]
+    [:div 
+      [help-button]]])
 
-(defn display-answer
+(defn input-answer
   "Displays typed in text from user"
   []
   (let [answer @(rf/subscribe [:answer])]
     [:p
       {:style 
         {:font-weight :bold
-         :font-size :large}}
+         :font-size "30px"}}
       (for [letter (seq answer)]
         (cond 
           (in-list? letter (rest @(rf/subscribe [:letters])))
           [:span letter]
 
           (= letter (first @(rf/subscribe [:letters])))
-          [:span 
-            {:style {:color :orange}}
-            letter]
+          [:span {:style {:color :orange}}
+                 letter]
 
           :else 
-          [:span 
-            {:style {:opacity 0.3}}
-            letter]))
-      [:span {:class "TextFadeInAndOut" :style {}} "|"]]))
+          [:span {:style {:opacity 0.3}}
+                 letter]))
+      [:span {:class "TextFadeInAndOut"} "|"]]))
 
-(defn type-in-answer 
+(defn display-answer 
   []
   (fn []
     [:div {:style {:margin-top "50px"}}
       [:h4 "Enter your answer: "]
-      [:div {:style {:margin-bottom "10px"}} ;; get input from user
-        [display-answer]]
+      [:div {:style {:margin-bottom "10px"}}
+        [input-answer]]
       [:p {:class "TextFadeInAndOut"
            :style {:color :red
                    :margin "0 auto"
                    :font-weight "bold"}} 
           (check-answer @(rf/subscribe [:answer]))]]))
 
-(defn ranking-information ; ranking points change depending on the game
+(defn ranking-information
   []
   (let [max-point (get-max-point)]
-  [:div
+  [:div {:style {:margin "20px 20px 20px 20px"}}
     [:h2 "Rankings"]
+    [:p "-------------------------------"]
     [:p "Ranks are based on a percentage of possible points in a puzzle. The minimum scores to reach each rank for today’s are:"]
     [:ul
       [:li "Beginner (0)"]
@@ -316,19 +352,22 @@
     [:div
       [:h4 
         {:style {:font-weight "bold" :margin-top "20px"}}
-        (get-rank points @(rf/subscribe [:word-list]))
-        [reagent-modals/modal-window] ; need to add modal-window before bringing up modal window
-        [:input {:class "slider"
-                 :style {:width "70%" :margin "0 auto"}
-                 :type "range"  ; slider or range??
-                 :value (reduce + points)
-                 :min 0
-                 :max (get-max-point)
-                 :disabled false
-                 :on-click #(reagent-modals/modal! (ranking-information))}]]
-      [:h3 
-        {:style {:color :orange}} 
-        "Point: " (reduce + points)]]))
+        (get-rank points @(rf/subscribe [:word-list]))]
+      [:div {:class "d-flex justify-content-center my-4"}
+        [:div {:class "range-field w-75"}
+          [:span {:style {:font-size "200%"}
+                  :class "font-weight-bold text-warning mr-2 valueSpan2"}
+            (reduce + points)]
+          [reagent-modals/modal-window] ; need to add modal-window before bringing up modal window
+          [:input {:class "custom-range"
+                   :id "slider11"
+                   :style {:width "80%"}
+                   :type "range"  
+                   :value (reduce + points)
+                   :min 0
+                   :max (get-max-point)
+                   :disabled false
+                   :on-click #(reagent-modals/modal! (ranking-information))}]]]]))
 
 (defn list-found-words
   "Displays all items from a sequence to browser"
@@ -345,11 +384,12 @@
 (defn main
   []
   [:<>
-    [:h1 {:style {:color :orange :text-align :center}} "Welcome to Spelling Bee!!"]
-    [:div {:class "col-6 col-md-6"}
-      [display-letters @(rf/subscribe [:letters])]
-      [type-in-answer]]
-    [:div {:style {:margin-top "50px"}
-           :class "col-6 col-md-6"}
-      [display-points]
-      [list-found-words]]])
+    [:div {:class "container"}
+      [:h1 {:style {:color :warning :text-align :center}} "Welcome to Spelling Bee!"]
+      [:div {:class "row"}
+        [:div {:class "col-md-6 col-sm-12"}
+          [display-letters @(rf/subscribe [:letters])]
+          [display-answer]]
+        [:div {:class "col-md-6 col-sm-12"}
+          [display-points]
+          [list-found-words]]]]])
