@@ -18,7 +18,7 @@
                  
   :source-paths ["src"]
 
-  :main spelling-bee.core
+  :main ^:figwheel-hooks spelling-bee.core
   
   :css-dirs ["resources/public/css"]
 
