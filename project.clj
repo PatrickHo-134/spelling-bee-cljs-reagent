@@ -1,6 +1,6 @@
 (defproject spelling-bee "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
+  :description "FIXME: A remade version of New York Times' spelling bee game using Clojurescript, Reagent and Re-frame."
+  :url "https://cljs-spelling-bee.herokuapp.com/"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
@@ -17,6 +17,8 @@
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]]
                  
   :source-paths ["src"]
+
+  :main spelling-bee.core
   
   :css-dirs ["resources/public/css"]
 
