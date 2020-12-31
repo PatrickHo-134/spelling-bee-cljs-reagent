@@ -1,9 +1,7 @@
 (ns spelling-bee.db
-  (:require 
-    [re-frame.core :as rf]
-    ; [ajax.core :as ajax :refer [GET]]
-    [day8.re-frame.http-fx]
-    [clojure.string :as s]))
+  (:require
+   [day8.re-frame.http-fx]
+   [clojure.string :as s]))
 
 (defonce myurl "https://raw.githubusercontent.com/PatrickHo-134/spelling-bee-cljs-reagent/master/src/spelling_bee/games.json")
 

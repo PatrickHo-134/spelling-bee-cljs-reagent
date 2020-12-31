@@ -3,7 +3,6 @@
             [re-frame.core :as rf]
             [reagent-modals.modals :as reagent-modals]
             [clojure.string :as s]
-            [goog.dom :as gdom]
             [goog.events :as gevents]))
 
 ;; utility functions

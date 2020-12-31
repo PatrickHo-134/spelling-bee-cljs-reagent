@@ -1,9 +1,7 @@
 (ns ^:figwheel-hooks spelling-bee.core
   (:require
    [goog.dom :as gdom]
-   [goog.string :as gstring]
    [reagent.core :as r :refer [atom]]
-   [reagent.dom :as rdom]
    [re-frame.core :as rf]
    [spelling-bee.events]
    [spelling-bee.subs]
@@ -27,8 +25,4 @@
 
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []
-  (mount-app-element)
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+  (mount-app-element))

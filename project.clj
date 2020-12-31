@@ -18,7 +18,8 @@
                  
   :source-paths ["src"]
 
-  :main ^:figwheel-hooks spelling-bee.core
+  :main ^:skip-aot spelling-bee.core
+  :aot [spelling-bee.core]
   
   :css-dirs ["resources/public/css"]
 
@@ -28,5 +29,5 @@
             "fig:test"  ["run" "-m" "figwheel.main" "-co" "test.cljs.edn" "-m" "spelling-bee.test-runner"]}
 
   :profiles {:dev {:dependencies [[com.bhauman/figwheel-main "0.2.3"]]
-                   }})
+             :uberjar {:aot :all}}})
 
