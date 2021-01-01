@@ -15,12 +15,12 @@
                  [day8.re-frame/http-fx "v0.2.0"]
                  [re-com "2.8.0"]
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]]
-                 
+
   :source-paths ["src"]
 
-  :main ^:skip-aot spelling-bee.core
-  :aot [spelling-bee.core]
-  
+  ;; :main spelling-bee.core
+  ;; :aot [spelling-bee.core]
+
   :css-dirs ["resources/public/css"]
 
   :aliases {"fig"       ["run" "-m" "figwheel.main"]
@@ -29,5 +29,5 @@
             "fig:test"  ["run" "-m" "figwheel.main" "-co" "test.cljs.edn" "-m" "spelling-bee.test-runner"]}
 
   :profiles {:dev {:dependencies [[com.bhauman/figwheel-main "0.2.3"]]
-             :uberjar {:aot :all}}})
+                   :uberjar {:aot :all}}})
 

@@ -14,3 +14,4 @@ pom.xml
 /resources/public/cljs-out/
 .lsp
 .clj-kondo
+.calva
