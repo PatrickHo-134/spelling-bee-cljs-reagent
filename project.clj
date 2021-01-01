@@ -8,6 +8,8 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.10.520"]
+                 [com.bhauman/figwheel-main "0.2.12"]
+                 [com.bhauman/rebel-readline-cljs "0.1.4"]
                  [reagent "0.8.1"]
                  [figwheel "0.5.19"]
                  [re-frame "1.0.0-rc1"]
@@ -17,9 +19,6 @@
                  [org.clojars.frozenlock/reagent-modals "0.2.3"]]
 
   :source-paths ["src"]
-
-  ;; :main spelling-bee.core
-  ;; :aot [spelling-bee.core]
 
   :css-dirs ["resources/public/css"]
 
