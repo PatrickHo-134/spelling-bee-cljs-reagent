@@ -2,6 +2,8 @@
 
 This is a remade version of [New York Times' spelling bee game](https://www.nytimes.com/puzzles/spelling-bee) using Clojurescript, Reagent and Re-frame.
 
+You can check out this [link](https://patrickho-134.github.io/spelling-bee-cljs-reagent/) to see the final product of this project.
+
 ## Overview
 
 This project is part of my Clojure training program and used for demonstrating some important concepts in Clojurescript, Reagent and Re-frame.
